@@ -1,5 +1,9 @@
+@import 'foundation';
+
+@include foundation-everything;
+
 body {
-  background-color: #EEE;
+  background-color: #AAA;
 
   h1 {
     color: #244751;
