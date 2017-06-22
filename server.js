@@ -78,18 +78,17 @@ app.get("/login", (req, res) => {
       user: users[req.session.user_id]
     }
   if (templateVars.user) {
-      res.redirect("/");
-    } else {
-      res.render("login");
-    }
-  res.render("login");
+    res.redirect("/");
+  } else {
+    res.render("login");
+  }
 });
 
 app.get("/register", (req, res) => {
   let templateVars = {
     user: users[req.session.user_id]
   };
-  res.render("register");
+  res.render("register", templateVars);
 });
 
 //APP POST//
