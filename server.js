@@ -16,9 +16,15 @@ const knexLogger  = require('knex-logger');
 
 const bcrypt = require('bcrypt-nodejs');
 const cookieSession = require('cookie-session')
+const method      = require("method-override");
 
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
+const customersRoutes = require("./routes/customers");
+const feedbacksRoutes = require("./routes/feedbacks");
+const inventoriesRoutes = require("./routes/inventories");
+const ordersRoutes = require("./routes/orders");
+const restaurantsRoutes = require("./routes/restaurants");
 
 let users = {
   "userRandomID": {
@@ -48,6 +54,7 @@ app.use(cookieSession({
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.use("/styles", sass({
   src: __dirname + "/styles",
@@ -57,10 +64,24 @@ app.use("/styles", sass({
   includePaths: [__dirname + '/node_modules/foundation-sites/assets/']
 }));
 app.use(express.static("public"));
+app.use(method('_method'));
+
+// Data helper
+const UserDataHelper = require("./db/helper/user-helper.js")(knex);
+const CustomerDataHelper = require("./db/helper/customer-helper.js")(knex);
+const FeedbackDataHelper = require("./db/helper/feedback-helper.js")(knex);
+const InventoryDataHelper = require("./db/helper/inventory-helper.js")(knex);
+const OrderDataHelper = require("./db/helper/order-helper.js")(knex);
+const RestaurantDataHelper = require("./db/helper/restaurant-helper.js")(knex);
 app.use(express.static("node_modules/foundation-sites/dist/"));
 
 // Mount all resource routes
-app.use("/api/users", usersRoutes(knex));
+app.use("/api/users", usersRoutes(UserDataHelper));
+app.use("/api/customers", customersRoutes(CustomerDataHelper));
+app.use("/api/feedbacks", feedbacksRoutes(FeedbackDataHelper));
+app.use("/api/inventories", inventoriesRoutes(InventoryDataHelper));
+app.use("/api/orders", ordersRoutes(OrderDataHelper, InventoryDataHelper));
+app.use("/api/restaurants", restaurantsRoutes(RestaurantDataHelper));
 
 // Home page
 app.get("/", (req, res) => {
