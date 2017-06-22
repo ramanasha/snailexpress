@@ -57,6 +57,7 @@ app.use("/styles", sass({
   includePaths: [__dirname + '/node_modules/foundation-sites/assets/']
 }));
 app.use(express.static("public"));
+app.use(express.static("node_modules/foundation-sites/dist/"));
 
 // Mount all resource routes
 app.use("/api/users", usersRoutes(knex));
@@ -84,55 +85,55 @@ app.get("/register", (req, res) => {
   res.render("register");
 });
 
-//order page
-app.get("/checkout", (req, res) => {
-  res.render("Checkout");
-});
-
 //APP POST//
 app.post("/login", (req, res) =>{
-    let email = req.body.email;
-    let password = req.body.password;
+  let email = req.body.email;
+  let password = req.body.password;
 
-    if (!email || !password) {
-      return res.status(400).send("Please enter email and/or password.");
+  if (!email || !password) {
+    return res.status(400).send("Please enter email and/or password.");
+  }
+  for (let key in users) {
+    if (email === users[key].email && bcrypt.compareSync(password, users[key].password)) {
+      req.session.user_id = key;
+      return res.redirect("/mypage");
     }
-    for (let key in users) {
-      if (email === users[key].email && bcrypt.compareSync(password, users[key].password)) {
-        req.session.user_id = key;
-        return res.redirect("/mypage");
-      }
-    }
-    res.status(403).send("Incorrect email and/or password.");
+  }
+  res.status(403).send("Incorrect email and/or password.");
 })
 
 app.post("/logout", (req, res) => {
-    req.session.user_id = null;
-    res.redirect("/login");
+  req.session.user_id = null;
+  res.redirect("/login");
 });
 
 app.post("/register", (req, res) => {
-    let email = req.body.email;
-    let password = req.body.password;
-    let user_id = randomPass(email);
-    // Did they enter an e-mail address or password?
-    if (!email || !password) {
-      return res.status(400).send("Please enter email and/or password.");
-    }
+  let email = req.body.email;
+  let password = req.body.password;
+  let user_id = randomPass(email);
+  // Did they enter an e-mail address or password?
+  if (!email || !password) {
+    return res.status(400).send("Please enter email and/or password.");
+  }
 
-    // Checking if user with already exists
-    for (let key in users) {
-      if (email === users[key].email) {
-        return res.status(400).send("User already exists!");
-      }
+  // Checking if user with already exists
+  for (let key in users) {
+    if (email === users[key].email) {
+      return res.status(400).send("User already exists!");
     }
-    users[user_id] = {
-      id: user_id,
-      email: email,
-      password: bcrypt.hashSync(password)
-    };
-    req.session.user_id = user_id;
-    res.redirect("/mypage");
+  }
+  users[user_id] = {
+    id: user_id,
+    email: email,
+    password: bcrypt.hashSync(password)
+  };
+  req.session.user_id = user_id;
+  res.redirect("/mypage");
+});
+
+//checkout page
+app.get("/checkout", (req, res) => {
+  res.render("checkout");
 });
 
 app.listen(PORT, () => {
