@@ -67,15 +67,22 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
+//checkout page
+app.get("/checkout", (req, res) => {
+  res.render("checkout");
+});
+
+//login and registration
 app.get("/login", (req, res) => {
   let templateVars = {
       user: users[req.session.user_id]
     }
   if (templateVars.user) {
-      res.redirect("/checkout");
+      res.redirect("/");
     } else {
       res.render("login");
     }
+  res.render("login");
 });
 
 app.get("/register", (req, res) => {
@@ -96,7 +103,7 @@ app.post("/login", (req, res) =>{
   for (let key in users) {
     if (email === users[key].email && bcrypt.compareSync(password, users[key].password)) {
       req.session.user_id = key;
-      return res.redirect("/mypage");
+      return res.redirect("/");
     }
   }
   res.status(403).send("Incorrect email and/or password.");
@@ -104,7 +111,7 @@ app.post("/login", (req, res) =>{
 
 app.post("/logout", (req, res) => {
   req.session.user_id = null;
-  res.redirect("/login");
+  res.redirect("/");
 });
 
 app.post("/register", (req, res) => {
@@ -115,7 +122,6 @@ app.post("/register", (req, res) => {
   if (!email || !password) {
     return res.status(400).send("Please enter email and/or password.");
   }
-
   // Checking if user with already exists
   for (let key in users) {
     if (email === users[key].email) {
@@ -128,12 +134,7 @@ app.post("/register", (req, res) => {
     password: bcrypt.hashSync(password)
   };
   req.session.user_id = user_id;
-  res.redirect("/mypage");
-});
-
-//checkout page
-app.get("/checkout", (req, res) => {
-  res.render("checkout");
+  res.redirect("/");
 });
 
 app.listen(PORT, () => {
