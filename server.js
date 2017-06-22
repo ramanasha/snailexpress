@@ -55,6 +55,11 @@ app.get("/checkout", (req, res) => {
   res.render("checkout");
 });
 
+//checkout page
+app.get("/order_status", (req, res) => {
+  res.render("order_status");
+});
+
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
 });
