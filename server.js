@@ -35,6 +35,7 @@ app.use("/styles", sass({
   includePaths: [__dirname + '/node_modules/foundation-sites/assets/']
 }));
 app.use(express.static("public"));
+app.use(express.static("node_modules/foundation-sites/dist/"));
 
 // Mount all resource routes
 app.use("/api/users", usersRoutes(knex));
@@ -49,9 +50,9 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
-//order page
-app.get("/order", (req, res) => {
-  res.render("order");
+//checkout page
+app.get("/checkout", (req, res) => {
+  res.render("checkout");
 });
 
 app.listen(PORT, () => {
