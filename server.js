@@ -58,6 +58,7 @@ const FeedbackDataHelper = require("./db/helper/feedback-helper.js")(knex);
 const InventoryDataHelper = require("./db/helper/inventory-helper.js")(knex);
 const OrderDataHelper = require("./db/helper/order-helper.js")(knex);
 const RestaurantDataHelper = require("./db/helper/restaurant-helper.js")(knex);
+app.use(express.static("node_modules/foundation-sites/dist/"));
 
 // Mount all resource routes
 app.use("/api/users", usersRoutes(UserDataHelper));
@@ -70,6 +71,16 @@ app.use("/api/restaurants", restaurantsRoutes(RestaurantDataHelper));
 // Home page
 app.get("/", (req, res) => {
   res.render("index");
+});
+
+// Login page
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
+//checkout page
+app.get("/checkout", (req, res) => {
+  res.render("checkout");
 });
 
 app.listen(PORT, () => {

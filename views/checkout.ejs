@@ -1,0 +1,142 @@
+<html lang="en">
+<%- include("partials/_head") %>
+<header class="text-center">
+    <h1> SNAIL EXPRESS </h1>
+</header>
+
+<body>
+  <div class="row">
+    <div class="column large-7">
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <img class="thumbnail" src="https://placehold.it/100x100">
+              Item 1
+            </td>
+            <td>20</td>
+            <td>$1.00</td>
+          </tr>
+          <tr>
+            <td>
+              <img class="thumbnail" src="https://placehold.it/100x100">
+              Item 2
+            </td>
+            <td>20</td>
+            <td>$1.00</td>
+          </tr>
+          <tr>
+            <td>
+              <img class="thumbnail" src="https://placehold.it/100x100">
+              Item 3
+            </td>
+            <td>20</td>
+            <td>$1.00</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td></td>
+            <td></td>
+            <td>
+              Subtotal:
+              <span class="subtotal">$30.00</span>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+      <div>
+        <div class="medium-6 column">
+          <img src="https://www.google.com/permissions/images/maps-att.png" />
+          
+        </div>
+        <addr class="medium-6 column">
+          (725) 352-3267<br />
+          Nicholas Desmond Simon Graham<br />
+          PO Box 1230<br />
+          Georgetown<br />
+          Grand Cayman<br />
+          CAYMAN ISLANDS - UK
+        </addr>
+      </div>
+    </div>
+    
+    <div class="column large-5">
+      <h2>Checkout</h2>
+
+      <ul class="tabs" data-tabs id="example-tabs">
+        <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Credit</a></li>
+        <li class="tabs-title"><a href="#panel2">Debit</a></li>
+        <li class="tabs-title"><a href="#panel3">Pay in store</a></li>
+      </ul>
+
+      <div class="tabs-content" data-tabs-content="example-tabs">
+        <div class="tabs-panel is-active" id="panel1">
+          <form>
+            <label>
+              Card Name
+              <input type="text" placeholder="Joe Smith" />
+            </label>
+            <label>
+              Phone Number
+              <input type="text" placeholder="324534573" />
+            </label>
+            <label>
+              Card Number
+              <input type="text" placeholder="XXXX-XXXX-XXXX-XXXX" />
+            </label>
+            <div class="row">
+              <label class="small-6 column">
+                CVC
+                <input type="text" placeholder="XXX" />
+              </label>
+              <label class="small-6 column">
+                Expiry
+                <input type="text" class="column small-6" placeholder="MM" />
+                <input type="text" class="column small-6" placeholder="YY" />
+              </label>
+            </div>
+            <button type="submit" class="expanded button">Pay Now</button>
+          </form>
+        </div>
+        <div class="tabs-panel" id="panel2">
+          <p>Two</p>
+          <img class="thumbnail" src="assets/img/generic/rectangle-7.jpg">
+        </div>
+        <div class="tabs-panel" id="panel3">
+          <a class="expanded button">Send Order</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
