@@ -32,58 +32,55 @@ module.exports = (OrderHelper, InventoryHelper) => {
   router.get("/:id", (req, res) => {
     let id = req.params.id;
 
-    OrderHelper.getOrderById(id, (err, orders) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-      } else {
+    OrderHelper.getOrderById(id)
+      .then((orders) => {
         res.json(orders);
-      }
-    });
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err.message });
+      });
   });
 
   // [api/orders/:id/progress] : returun start_timestamp and time_to_complete by order id
   router.get("/:id/progress", (req, res) => {
     let id = req.params.id;
 
-    OrderHelper.getProgressData(id, (err, result) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-      } else {
+    OrderHelper.getProgressData(id)
+      .then((result) => {
         res.json(result);
-      }
-    });
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err.message });
+      });
   });
 
   // [api/orders/:id/complete] : update current status to complete
   router.put("/:id/complete", (req, res) => {
     let id = req.params.id;
 
-    OrderHelper.complete(id, (err) => {
-      if (err) {
+    OrderHelper.complete(id)
+      .then(() => {
+        return sms.sendSMS("437-345-2360", "Ready to pick up!");
+      })
+      .then(() => {
+        res.status(200).send();
+      })
+      .catch((err) => {
         res.status(500).json({ error: err.message });
-      } else {
-        sms.sendSMS("437-345-2360", "Ready to pick up!", (err) => {
-          if (err) {
-            res.status(500).json({ error: err.message });
-          } else {
-            res.status(200).send();
-          }
-        });
-      }
-    });
+      });
   });
 
   // [api/orders/:id/cancel] : update current status to cancel
   router.put("/:id/cancel", (req, res) => {
     let id = req.params.id;
 
-    OrderHelper.cancel(id, (err) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-      } else {
+    OrderHelper.cancel(id)
+      .then(() => {
         res.status(200).send();
-      }
-    });
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err.message });
+      });
   });
 
   /* format
@@ -101,13 +98,13 @@ module.exports = (OrderHelper, InventoryHelper) => {
     let id = req.params.id;
     let min = req.body.min;
 
-    OrderHelper.updateTime(id, min, (err, orders) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-      } else {
+    OrderHelper.updateTime(id, min)
+      .then(() => {
         res.json(orders);
-      }
-    });
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err.message });
+      });
   });
 
   /* json fomat example
@@ -160,16 +157,16 @@ module.exports = (OrderHelper, InventoryHelper) => {
     let email = "";
     let min = req.body.order.min;
 
-    if (paymentType === '1') { // card
+    if (paymentType === 'credit_card') { // card
       name = payment.credit.name;
       phone = payment.credit.phone;
       cardNo = payment.credit.card_no;
       cardCsc = payment.credit.card_csc;
       cardExpiry = payment.credit.card_expiry;
-    } else if (paymentType === '2') {
+    } else if (paymentType === 'debit_card') {
       name = payment.debit.name;
       phone = payment.debit.phone;
-    } else if (paymentType === '3') {
+    } else if (paymentType === 'pay_in_store') {
       name = payment.store.name;
       phone = payment.store.phone;
     }
@@ -179,16 +176,9 @@ module.exports = (OrderHelper, InventoryHelper) => {
       itemsIds.push(items[idx].id);
     }
 
-    new Promise((resolve, reject) => {
-      // get price infomation
-      InventoryHelper.getPriceByIds(itemsIds, (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      });
-    }).then((result) => {
+    // get price infomation
+    InventoryHelper.getPriceByIds(itemsIds)
+    .then((result) => {
       // add price to item object
       for (let idx in items) {
         for (let dbIdx in result) {
@@ -210,7 +200,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
       timeToComplete.setMinutes(timeToComplete.getMinutes() + min);
 
       let order = {
-        status: 1,
+        status: 'incomplete',
         start_timestamp: new Date(),
         total_price: totalPrice,
         special_requests: specialRequests,
