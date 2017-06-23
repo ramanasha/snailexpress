@@ -158,6 +158,16 @@ app.post("/register", (req, res) => {
   res.redirect("/");
 });
 
+// order status page
+app.get("/order_status", (req, res) => {
+  res.render("order_status");
+});
+
+// order management page
+app.get("/order_management", (req, res) => {
+  res.render("order_management");
+});
+
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
 });
