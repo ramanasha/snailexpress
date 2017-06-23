@@ -1,5 +1,6 @@
 "use strict";
 
+const sms = require('../lib/sms-helper');
 const express = require('express');
 const router  = express.Router();
 
@@ -16,6 +17,16 @@ module.exports = (OrderHelper, InventoryHelper) => {
     });
   });
 
+  router.get("/testapi", (req, res) => {
+    sms.sendSMS("437-345-2360", "hello", (err) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      } else {
+        res.status(200).send();
+      }
+    });
+  });
+
   router.get("/:id", (req, res) => {
     let id = req.params.id;
 
@@ -28,7 +39,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
     });
   });
 
-  router.get("/progress/:id", (req, res) => {
+  router.get("/:id/progress", (req, res) => {
     let id = req.params.id;
 
     OrderHelper.getProgressData(id, (err, orders) => {
@@ -40,10 +51,45 @@ module.exports = (OrderHelper, InventoryHelper) => {
     });
   });
 
-  router.put("/", (req, res) => {
+  router.put("/:id/complete", (req, res) => {
     let id = req.params.id;
 
-    OrderHelper.getProgressData(id, (err, orders) => {
+    OrderHelper.complete(id, (err, orders) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      } else {
+        res.json(orders);
+      }
+    });
+  });
+
+  router.put("/:id/cancel", (req, res) => {
+    let id = req.params.id;
+
+    OrderHelper.cancel(id, (err, orders) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      } else {
+        res.json(orders);
+      }
+    });
+  });
+
+  /* format
+    {
+      min: 50
+    }
+  */
+  router.put("/:id/update_time", (req, res) => {
+    if (!req.body) {
+      res.status(400).json({ error: 'invalid request: no data in POST body'});
+      return;
+    }
+
+    let id = req.params.id;
+    let min = req.body.min;
+
+    OrderHelper.updateTime(id, min, (err, orders) => {
       if (err) {
         res.status(500).json({ error: err.message });
       } else {
@@ -67,6 +113,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
     "order": {
       "special_requests": "bla~bla~bla~",
       "restaurant_id": 1,
+      "min" : 30,
       "items":[
           {
               "id": 1,
@@ -98,6 +145,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
     let cardCsc = null;
     let cardExpiry = null;
     let email = "";
+    let min = req.body.order.min;
 
     if (paymentType === '1') { // card
       name = payment.credit.name;
@@ -145,12 +193,16 @@ module.exports = (OrderHelper, InventoryHelper) => {
         return Number(total.price * total.qty) + Number(current.price * current.qty);
       });
 
+      let timeToComplete = new Date();
+      timeToComplete.setMinutes(timeToComplete.getMinutes() + min);
+
       let order = {
         status: 1,
         start_timestamp: new Date(),
         total_price: totalPrice,
         special_requests: specialRequests,
-        restaurant_id: restaurantId
+        restaurant_id: restaurantId,
+        time_to_complete: timeToComplete
       };
 
       let payment = {

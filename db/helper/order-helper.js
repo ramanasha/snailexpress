@@ -56,10 +56,10 @@ module.exports = (knex) => {
           cb(err);
         });
     },
-    updateOrder: (id, order, cb) => {
+    complete: (id, cb) => {
       knex("orders")
       .where("id", id)
-      .update(order)
+      .update({end_timestamp: new Date(), status: "2"})
       .then(() => {
         cb(null);
       })
@@ -67,9 +67,39 @@ module.exports = (knex) => {
         cb(err);
       });
     },
+    cancel: (id, cb) => {
+      knex("orders")
+      .where("id", id)
+      .update({end_timestamp: new Date(), status: "3"})
+      .then(() => {
+        cb(null);
+      })
+      .catch((err) => {
+        cb(err);
+      });
+    },
+    updateTime: (id, min, cb) => {
+      knex
+      .select("time_to_complete")
+      .from("orders")
+      .where("id", id)
+      .then((result) => {
+        let timeToComplete = new Date(result[0].time_to_complete);
+        timeToComplete.setMinutes(timeToComplete.getMinutes() + min);
+        return timeToComplete;
+      }).then((timeToComplete) => {
+        return knex("orders")
+        .where("id", id)
+        .update({time_to_complete: timeToComplete})
+      }).then(() => {
+        cb(null);
+      }).catch((err) => {
+        cb(err);
+      });
+    },
     getProgressData: (id, cb) => {
       knex
-        .select("start_timestamp", "end_timestamp")
+        .select("start_timestamp", "time_to_complete")
         .from("orders")
         .where("id", id)
         .then((result) => {
