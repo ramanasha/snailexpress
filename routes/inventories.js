@@ -6,13 +6,13 @@ const router  = express.Router();
 module.exports = (DataHelper) => {
 
   router.get("/", (req, res) => {
-    DataHelper.getInventories((err, inventories) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-      } else {
+    DataHelper.getInventories()
+      .then((inventories) => {
         res.json(inventories);
-      }
-    });
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err.message });
+      });
   });
 
   router.get("/:name", (req, res) => {
@@ -23,14 +23,14 @@ module.exports = (DataHelper) => {
 
     let name = req.params.name;
 
-    DataHelper.getInventoryByName(name, (err, inventories) => {
-      if (err) {
+    DataHelper.getInventoryByName(name)
+      .then((inventory) => {
+        res.json(inventory);
+      })
+      .catch((err) => {
         res.status(500).json({ error: err.message });
-      } else {
-        res.json(inventories);
-      }
-    });
+      });
   });
 
   return router;
-}
+};
