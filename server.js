@@ -93,7 +93,7 @@ app.use("/api/restaurants", restaurantsRoutes(RestaurantDataHelper));
 
 function createTemplateVars(req, templateVars = {}) {
   templateVars.users = users[req.session.user_id];
-  templateVars.messages = req.flash('info');
+  templateVars.messages = req.flash('messages');
   return templateVars;
 }
 
@@ -131,8 +131,7 @@ app.post("/login", (req, res) =>{
   if (!email || !password) {
     console.log("no email or password entered");//
     req.flash('messages', 'Please enter email and/or password.');
-    res.redirect('/login');
-    // return res.status(400).send("Please enter email and/or password.");
+    return res.redirect('/login');
   }
   for (let key in users) {
     if (email === users[key].email && bcrypt.compareSync(password, users[key].password)) {
@@ -142,8 +141,7 @@ app.post("/login", (req, res) =>{
     }
   }
   req.flash('messages', 'Incorrect email and/or password!');
-  res.render('login');
-  // res.status(403).send("Incorrect email and/or password.");
+  return res.redirect('/login');
 });
 
 app.post("/logout", (req, res) => {
@@ -159,15 +157,13 @@ app.post("/register", (req, res) => {
   // Did they enter an e-mail address or password?
   if (!email || !password) {
     req.flash('messages', 'Email or password not entered.');
-    res.render('register');
-    // return res.status(400).send("Please enter email and/or password.");
+    return res.redirect('/register');
   }
   // Checking if user with already exists
   for (let key in users) {
     if (email === users[key].email) {
       req.flash('messages', 'User already exists!');
-      res.render('register');
-      // return res.status(400).send("User already exists!");
+      return res.redirect('/register');
     }
   }
   users[user_id] = {
@@ -176,7 +172,7 @@ app.post("/register", (req, res) => {
     password: bcrypt.hashSync(password)
   };
   req.session.user_id = user_id;
-  res.redirect("/");
+  return res.redirect("/");
 });
 
 // order status page
