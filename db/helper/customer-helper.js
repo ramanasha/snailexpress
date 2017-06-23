@@ -1,27 +1,15 @@
 module.exports = (knex) => {
   return {
-    getCustomers: (cb) => {
-      knex
-        .select("*")
-        .from("customers")
-        .then((results) => {
-          cb(null, results);
-        })
-        .catch((err) => {
-          cb(err);
-      });
+    getCustomers: () => {
+      return knex
+              .select("*")
+              .from("customers");
     },
-    getCustomerById: (id, cb) => {
-      knex
-        .select("*")
-        .from("customers")
-        .where("id", id)
-        .then((results) => {
-          cb(null, results);
-        })
-        .catch((err) => {
-          cb(err);
-      });
+    getCustomerById: (id) => {
+      return knex
+              .select("*")
+              .from("customers")
+              .where("id", id);
     }
   }
 }
