@@ -4,9 +4,6 @@ require('dotenv').config();
 
 const PORT        = process.env.PORT || 8080;
 const ENV         = process.env.ENV || "development";
-const COOKIE_SECRET = process.env.COOKIE_SECRET;
-if (!COOKIE_SECRET) throw new Error("COOKIE_SECRET environment variable required");
-
 const express     = require("express");
 const bodyParser  = require("body-parser");
 const sass        = require("node-sass-middleware");
@@ -18,8 +15,7 @@ const morgan      = require('morgan');
 const knexLogger  = require('knex-logger');
 
 const bcrypt = require('bcrypt-nodejs');
-const cookieSession = require('cookie-session');
-const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session')
 const method      = require("method-override");
 
 // Seperated Routes for each Resource
@@ -41,7 +37,7 @@ let users = {
     email: "user2@example.com",
     password: bcrypt.hashSync("test2")
   }
-};
+}
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
@@ -53,9 +49,8 @@ app.use(knexLogger(knex));
 
 app.use(cookieSession({
   name: "session",
-  secret: COOKIE_SECRET
+  keys: ["key1", "key2"]
 }));
-app.use(cookieParser(COOKIE_SECRET));
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -88,10 +83,10 @@ app.use("/api/inventories", inventoriesRoutes(InventoryDataHelper));
 app.use("/api/orders", ordersRoutes(OrderDataHelper, InventoryDataHelper));
 app.use("/api/restaurants", restaurantsRoutes(RestaurantDataHelper));
 
-function createTemplateVars(req, templateVars = {}) {
-  templateVars.users = users[req.session.user_id];
-  templateVars.messages = req.flash('info');
-  return templateVars;
+function createTemplateVars(req) {
+  return {
+    user: users[req.session.user_id]
+  };
 }
 
 // Home page
@@ -101,9 +96,7 @@ app.get("/", (req, res) => {
 
 //checkout page
 app.get("/checkout", (req, res) => {
-  res.render("checkout", createTemplateVars(req, {
-    cart: req.cookies.cart
-  }));
+  res.render("checkout", createTemplateVars(req));
 });
 
 //login and registration
@@ -135,7 +128,7 @@ app.post("/login", (req, res) =>{
     }
   }
   res.status(403).send("Incorrect email and/or password.");
-});
+})
 
 app.post("/logout", (req, res) => {
   req.session.user_id = null;
