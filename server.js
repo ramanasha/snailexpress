@@ -4,6 +4,9 @@ require('dotenv').config();
 
 const PORT          = process.env.PORT || 8080;
 const ENV           = process.env.ENV || "development";
+const COOKIE_SECRET = process.env.COOKIE_SECRET;
+if (!COOKIE_SECRET) throw new Error("COOKIE_SECRET environment variable required");
+
 const express       = require("express");
 const bodyParser    = require("body-parser");
 const sass          = require("node-sass-middleware");
@@ -16,7 +19,7 @@ const knexLogger    = require('knex-logger');
 const flash         = require('connect-flash');
 
 const bcrypt        = require('bcrypt-nodejs');
-const cookieSession = require('cookie-session')
+const cookieSession = require('cookie-session');
 const method        = require("method-override");
 
 // Seperated Routes for each Resource
@@ -38,7 +41,7 @@ let users = {
     email: "user2@example.com",
     password: bcrypt.hashSync("test2")
   }
-}
+};
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -52,7 +55,7 @@ app.use(knexLogger(knex));
 //set cookie sessions to remember users for 24 hours
 app.use(cookieSession({
   name: "session",
-  keys: ["key1", "key2"],
+  secret: COOKIE_SECRET,
   maxAge: 24 * 60 * 60 * 1000 // cookie expires in 24 hours
 }));
 //use flash messages
@@ -85,10 +88,10 @@ app.use("/api/inventories", inventoriesRoutes(InventoryDataHelper));
 app.use("/api/orders", ordersRoutes(OrderDataHelper, InventoryDataHelper));
 app.use("/api/restaurants", restaurantsRoutes(RestaurantDataHelper));
 
-function createTemplateVars(req) {
-  return {
-    user: users[req.session.user_id]
-  };
+function createTemplateVars(req, templateVars = {}) {
+  templateVars.users = users[req.session.user_id];
+  templateVars.messages = req.flash('info');
+  return templateVars;
 }
 
 // Home page
@@ -98,7 +101,9 @@ app.get("/", (req, res) => {
 
 //checkout page
 app.get("/checkout", (req, res) => {
-  res.render("checkout", createTemplateVars(req));
+  res.render("checkout", createTemplateVars(req, {
+    cart: req.cookies.cart
+  }));
 });
 
 //login and registration
@@ -136,7 +141,7 @@ app.post("/login", (req, res) =>{
   req.flash('messages', 'Incorrect email and/or password!');
   res.render('login');
   // res.status(403).send("Incorrect email and/or password.");
-})
+});
 
 app.post("/logout", (req, res) => {
   req.session.user_id = null;
