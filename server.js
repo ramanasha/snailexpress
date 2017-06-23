@@ -19,6 +19,7 @@ const knexLogger    = require('knex-logger');
 const flash         = require('connect-flash');
 
 const bcrypt        = require('bcrypt-nodejs');
+const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const method        = require("method-override");
 
@@ -52,7 +53,9 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 // Log knex SQL queries to STDOUT as well
 app.use(knexLogger(knex));
+
 //set cookie sessions to remember users for 24 hours
+app.use(cookieParser(COOKIE_SECRET));
 app.use(cookieSession({
   name: "session",
   secret: COOKIE_SECRET,
