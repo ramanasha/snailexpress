@@ -6,6 +6,8 @@ const PORT          = process.env.PORT || 8080;
 const ENV           = process.env.ENV || "development";
 const COOKIE_SECRET = process.env.COOKIE_SECRET;
 if (!COOKIE_SECRET) throw new Error("COOKIE_SECRET environment variable required");
+const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+if (!GOOGLE_MAPS_API_KEY) throw new Error("GOOGLE_MAPS_API_KEY environment variable required");
 
 const express       = require("express");
 const bodyParser    = require("body-parser");
@@ -94,6 +96,7 @@ app.use("/api/restaurants", restaurantsRoutes(RestaurantDataHelper));
 function createTemplateVars(req, templateVars = {}) {
   templateVars.users = users[req.session.user_id];
   templateVars.messages = req.flash('messages');
+  templateVars.googleMapsAPIKey = GOOGLE_MAPS_API_KEY;
   return templateVars;
 }
 
