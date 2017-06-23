@@ -1,0 +1,128 @@
+<html lang="en">
+<%- include("partials/_head") %>
+<header class="text-center">
+    <h1> Manage Orders </h1>
+</header>
+
+<body>
+  <div class="row">
+    <div class="column large-7">
+      <table>
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Time since Order</th>
+            <th>Total</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <img class="thumbnail" src="https://placehold.it/100x100">
+              Bobby Jenkins
+            </td>
+            <td>1 minute ago</td>
+            <td>$1.00</td>
+            <td>Incomplete</td>
+          </tr>
+          <tr>
+            <td>
+              <img class="thumbnail" src="https://placehold.it/100x100">
+              John Jenkins
+            </td>
+            <td>3 minutes ago</td>
+            <td>$1.00</td>
+            <td>Incomplete</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="secondary callout">
+        Complete orders older than 30 minutes are hidden.
+      </div>
+    </div>
+    
+    <div class="column large-5">
+      <h2>Order</h2>
+      
+      <h3>Items</h3>
+      <ul>
+        <li>
+          <div class="row">
+            <div class="column small-3 text-center"><img class="thumbnail" src="https://placehold.it/100x100"></div>
+            <div class="column small-9">
+              <h5>Item 1</h5>
+              x 20<br />
+              $1.00
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="row">
+            <div class="column small-3 text-center"><img class="thumbnail" src="https://placehold.it/100x100"></div>
+            <div class="column small-9">
+              <h5>Item 2</h5>
+              x 34<br />
+              $2.00
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="row">
+            <div class="column small-3 text-center"><img class="thumbnail" src="https://placehold.it/100x100"></div>
+            <div class="column small-9">
+              <h5>Item 3</h5>
+              x 73<br />
+              $3.00
+            </div>
+          </div>
+        </li>
+      </ul>
+     
+      <h3>Customer Information</h3>
+      <div class="callout row">
+        <div class="column small-3 text-center"><img class="thumbnail" src="https://placehold.it/100x100"></div>
+        <div class="column small-9">
+          Bobby Jenkins<br />
+          (342) 435-3723
+        </div>
+      </div>
+      
+      <div class="text-right">
+        <div>Due in 10 minutes</div>
+        <button class="button">
+          - 10 minutes
+        </button>
+        <button class="button">
+          + 10 minutes
+        </button>
+        <button class="primary button">
+          Complete Order
+        </button>
+      </div>
+     
+    </div>
+  </div>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
