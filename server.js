@@ -55,9 +55,14 @@ app.get("/checkout", (req, res) => {
   res.render("checkout");
 });
 
-//checkout page
+// order status page
 app.get("/order_status", (req, res) => {
   res.render("order_status");
+});
+
+// order management page
+app.get("/order_management", (req, res) => {
+  res.render("order_management");
 });
 
 app.listen(PORT, () => {
