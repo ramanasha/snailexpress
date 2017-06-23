@@ -62,7 +62,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
       if (err) {
         res.status(500).json({ error: err.message });
       } else {
-        sms.sendSMS("437-345-2360", "hello", (err) => {
+        sms.sendSMS("437-345-2360", "Ready to pick up!", (err) => {
           if (err) {
             res.status(500).json({ error: err.message });
           } else {
