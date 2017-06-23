@@ -157,16 +157,16 @@ module.exports = (OrderHelper, InventoryHelper) => {
     let email = "";
     let min = req.body.order.min;
 
-    if (paymentType === 'credit_card') { // card
+    if (paymentType === 'credit') { // card
       name = payment.credit.name;
       phone = payment.credit.phone;
       cardNo = payment.credit.card_no;
       cardCsc = payment.credit.card_csc;
       cardExpiry = payment.credit.card_expiry;
-    } else if (paymentType === 'debit_card') {
+    } else if (paymentType === 'debit') {
       name = payment.debit.name;
       phone = payment.debit.phone;
-    } else if (paymentType === 'pay_in_store') {
+    } else if (paymentType === 'store') {
       name = payment.store.name;
       phone = payment.store.phone;
     }
@@ -231,13 +231,9 @@ module.exports = (OrderHelper, InventoryHelper) => {
       }
 
       // insert order to table
-      OrderHelper.insertOrder(order, customer, orderItems, payment, (err) => {
-        if (err) {
-          throw new Error(err);
-        } else {
-          res.status(201).send();
-        }
-      });
+      return OrderHelper.insertOrder(order, customer, orderItems, payment);
+    }).then(() => {
+      res.status(201).send();
     }).catch((err) => {
       res.status(500).json({ error: err.message });
     });
