@@ -2,9 +2,35 @@
   <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
   <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
   <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
-  
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.4/js.cookie.min.js"></script>
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
   <script type="text/javascript" src="js/foundation.js"></script>
   <script type="text/javascript" src="/scripts/app.js"></script>
+  <script type="text/javascript" src="/scripts/cart.js"></script>
+
   <title>SNAIL EXPRESS</title>
+  
 </head>
+
+<nav class="top-bar">
+  <div class="top-bar-title">
+    <span data-responsive-toggle="responsive-menu" data-hide-for="medium">
+      <button class="menu-icon dark" type="button" data-toggle></button>
+    </span>
+    <strong>SNAIL EXPRESS</strong>
+  </div>
+  <div id="responsive-menu">
+    <div class="top-bar-right">
+      <ul class="menu">
+        <% if (typeof user == 'undefined') { %>
+          <li><button type="button" class="button" onclick="window.location.href='/register'">Register</button></li>
+          <li><button type="button" class="button" onclick="window.location.href='/login'">Login</button></li>
+        <% } else { %>
+          <li><button type="button" class="button" onclick="window.location.href='/'">Logout</button></li>
+          <span style="float: right; margin-right: 10px"> Hello, <%= user.email %>! </span>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>
