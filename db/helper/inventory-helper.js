@@ -11,6 +11,12 @@ module.exports = (knex) => {
               .from("inventories")
               .where("name", name);
     },
+    getInventoryByIds: (ids) => {
+      return knex
+              .select("*")
+              .from("inventories")
+              .whereIn("id", ids);
+    },
     getPriceByIds: (ids) => {
       return knex
               .select("id", "price")
@@ -32,5 +38,5 @@ module.exports = (knex) => {
               .where("id", id)
               .del();
     }
-  }
-}
+  };
+};
