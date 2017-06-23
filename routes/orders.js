@@ -7,6 +7,7 @@ const router  = express.Router();
 // Status => 1. in progress 2: complete 3: cancel
 module.exports = (OrderHelper, InventoryHelper) => {
 
+  // [api/orders/] : return all order list
   router.get("/", (req, res) => {
     OrderHelper.getOrders((err, orders) => {
       if (err) {
@@ -17,16 +18,17 @@ module.exports = (OrderHelper, InventoryHelper) => {
     });
   });
 
-  router.get("/testapi", (req, res) => {
-    sms.sendSMS("437-345-2360", "hello", (err) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-      } else {
-        res.status(200).send();
-      }
-    });
+  // incoming sms example code
+  // todo : implement incoming sms
+  router.post('/sms', function(req, res) {
+    let twilio = require('twilio');
+    let twiml = new twilio.TwimlResponse();
+    twiml.message('The Robots are coming! Head for the hills!');
+    res.writeHead(200, {'Content-Type': 'text/xml'});
+    res.end(twiml.toString());
   });
 
+  // [api/orders/:id] : return an order by order id
   router.get("/:id", (req, res) => {
     let id = req.params.id;
 
@@ -39,38 +41,47 @@ module.exports = (OrderHelper, InventoryHelper) => {
     });
   });
 
+  // [api/orders/:id/progress] : returun start_timestamp and time_to_complete by order id
   router.get("/:id/progress", (req, res) => {
     let id = req.params.id;
 
-    OrderHelper.getProgressData(id, (err, orders) => {
+    OrderHelper.getProgressData(id, (err, result) => {
       if (err) {
         res.status(500).json({ error: err.message });
       } else {
-        res.json(orders);
+        res.json(result);
       }
     });
   });
 
+  // [api/orders/:id/complete] : update current status to complete
   router.put("/:id/complete", (req, res) => {
     let id = req.params.id;
 
-    OrderHelper.complete(id, (err, orders) => {
+    OrderHelper.complete(id, (err) => {
       if (err) {
         res.status(500).json({ error: err.message });
       } else {
-        res.json(orders);
+        sms.sendSMS("437-345-2360", "Ready to pick up!", (err) => {
+          if (err) {
+            res.status(500).json({ error: err.message });
+          } else {
+            res.status(200).send();
+          }
+        });
       }
     });
   });
 
+  // [api/orders/:id/cancel] : update current status to cancel
   router.put("/:id/cancel", (req, res) => {
     let id = req.params.id;
 
-    OrderHelper.cancel(id, (err, orders) => {
+    OrderHelper.cancel(id, (err) => {
       if (err) {
         res.status(500).json({ error: err.message });
       } else {
-        res.json(orders);
+        res.status(200).send();
       }
     });
   });
@@ -80,6 +91,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
       min: 50
     }
   */
+  //[api/orders/:id/update_time] : update time_to_complete (unit: minute)
   router.put("/:id/update_time", (req, res) => {
     if (!req.body) {
       res.status(400).json({ error: 'invalid request: no data in POST body'});
@@ -98,7 +110,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
     });
   });
 
-  /* Format
+  /* json fomat example
   {
     "payment": {
         "type": "1", // 1: credit, 2: debit, 3: pay store
@@ -127,6 +139,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
     }
   }
   */
+  // [api/orders] : create new order
   router.post("/", (req, res) => {
     if (!req.body) {
       res.status(400).json({ error: 'invalid request: no data in POST body'});
