@@ -167,9 +167,10 @@ module.exports = (OrderHelper, InventoryHelper) => {
 
       let orderItems = [];
 
-      for (let idx in itemsIds) {
+      for (let idx in items) {
         let data = {
-          inventory_id: itemsIds[idx]
+          inventory_id: items[idx].id,
+          qty: items[idx].qty
         }
         orderItems.push(data);
       }
