@@ -16,22 +16,57 @@ module.exports = (OrderHelper, InventoryHelper) => {
     });
   });
 
+  router.get("/:id", (req, res) => {
+    let id = req.params.id;
+
+    OrderHelper.getOrderById(id, (err, orders) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      } else {
+        res.json(orders);
+      }
+    });
+  });
+
+  router.get("/progress/:id", (req, res) => {
+    let id = req.params.id;
+
+    OrderHelper.getProgressData(id, (err, orders) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      } else {
+        res.json(orders);
+      }
+    });
+  });
+
+  router.put("/", (req, res) => {
+    let id = req.params.id;
+
+    OrderHelper.getProgressData(id, (err, orders) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+      } else {
+        res.json(orders);
+      }
+    });
+  });
+
   /* Format
-   {
+  {
     "payment": {
-        "type": 1,
+        "type": "1", // 1: credit, 2: debit, 3: pay store
         "credit": {
           "name": "kim",
           "phone": "222-222-2222",
           "card_no": "2222-2222-2222-2222",
-          "card_csc": "222",
+          "card_cvc": "222",
           "card_expiry": "2022-11-11"
         }
     },
     "order": {
       "special_requests": "bla~bla~bla~",
       "restaurant_id": 1,
-      "customer_id": 2,
       "items":[
           {
               "id": 1,
@@ -68,8 +103,8 @@ module.exports = (OrderHelper, InventoryHelper) => {
       name = payment.credit.name;
       phone = payment.credit.phone;
       cardNo = payment.credit.card_no;
-      cardCvc = payment.credit.card_cvc;
-      cardExpiry = paymemt.credit.card_expiry;
+      cardCsc = payment.credit.card_csc;
+      cardExpiry = payment.credit.card_expiry;
     } else if (paymentType === '2') {
       name = payment.debit.name;
       phone = payment.debit.phone;
@@ -127,36 +162,29 @@ module.exports = (OrderHelper, InventoryHelper) => {
 
       let customer = {
         phone: phone,
-        name: name,
         email: email
       }
 
+      let orderItems = [];
+
+      for (let idx in itemsIds) {
+        let data = {
+          inventory_id: itemsIds[idx]
+        }
+        orderItems.push(data);
+      }
+
       // insert order to table
-      OrderHelper.insertOrder(order, customer, payment, (err) => {
+      OrderHelper.insertOrder(order, customer, orderItems, payment, (err) => {
         if (err) {
           throw new Error(err);
+        } else {
+          res.status(201).send();
         }
       });
     }).catch((err) => {
       res.status(500).json({ error: err.message });
     });
-
-
-
-    // DataHelper.insertOrders((err, orders) => {
-    //   let order = {
-    //     status: "1",
-    //     start_timestamp: new date(),
-    //     total_price:
-
-    //   };
-
-    //   if (err) {
-    //     res.status(500).json({ error: err.message });
-    //   } else {
-    //     res.status(201).send();
-    //   }
-    // });
   });
 
   return router;
