@@ -109,7 +109,7 @@ app.get("/", (req, res) => {
 app.get("/checkout", (req, res) => {
   const cartCookie = req.cookies.cart ? JSON.parse(req.cookies.cart) : [];
   const cartIds = cartCookie.map((item) => item.inventoryId);
-  
+
   const cartQuantity = cartCookie.reduce((memo, item) => {
     memo[item.inventoryId] = item.quantity;
     return memo;
@@ -121,7 +121,7 @@ app.get("/checkout", (req, res) => {
         item.quantity = cartQuantity[item.id];
         return item;
       });
-      
+
       // FIXME make sure we don't have negative stock
       console.log(items);
       const subtotal = items.reduce((sum, item) => {
@@ -137,7 +137,7 @@ app.get("/checkout", (req, res) => {
     .catch((err) => {
       res.status(500).json({ error: err.message });
     });
-  
+
 });
 
 //login and registration
@@ -152,6 +152,10 @@ app.get("/login", (req, res) => {
 
 app.get("/register", (req, res) => {
   res.render("register", createTemplateVars(req));
+});
+
+app.get("/maps", (req, res) => {
+  res.render("maps", createTemplateVars(req));
 });
 
 //APP POST//

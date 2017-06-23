@@ -15,7 +15,7 @@
       function initMap() {
         var rogersCentre = {lat: 43.641636, lng: -79.389265};
         var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
+          zoom: 16,
           center: rogersCentre
         });
         var marker = new google.maps.Marker({
@@ -24,9 +24,6 @@
         });
       }
     </script>
-    <script async defer
-
-    src="https://maps.googleapis.com/maps/api/js?key=<%=googleMapsAPIKey%>&callback=initMap">
-    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%=googleMapsAPIKey%>&callback=initMap"></script>
   </body>
 </html>
