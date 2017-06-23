@@ -2,28 +2,29 @@
 
 require('dotenv').config();
 
-const PORT        = process.env.PORT || 8080;
-const ENV         = process.env.ENV || "development";
-const express     = require("express");
-const bodyParser  = require("body-parser");
-const sass        = require("node-sass-middleware");
-const app         = express();
+const PORT          = process.env.PORT || 8080;
+const ENV           = process.env.ENV || "development";
+const express       = require("express");
+const bodyParser    = require("body-parser");
+const sass          = require("node-sass-middleware");
+const app           = express();
 
-const knexConfig  = require("./knexfile");
-const knex        = require("knex")(knexConfig[ENV]);
-const morgan      = require('morgan');
-const knexLogger  = require('knex-logger');
+const knexConfig    = require("./knexfile");
+const knex          = require("knex")(knexConfig[ENV]);
+const morgan        = require('morgan');
+const knexLogger    = require('knex-logger');
+const flash         = require('connect-flash');
 
-const bcrypt = require('bcrypt-nodejs');
+const bcrypt        = require('bcrypt-nodejs');
 const cookieSession = require('cookie-session')
-const method      = require("method-override");
+const method        = require("method-override");
 
 // Seperated Routes for each Resource
-const usersRoutes = require("./routes/users");
+const usersRoutes   = require("./routes/users");
 const customersRoutes = require("./routes/customers");
 const feedbacksRoutes = require("./routes/feedbacks");
 const inventoriesRoutes = require("./routes/inventories");
-const ordersRoutes = require("./routes/orders");
+const ordersRoutes   = require("./routes/orders");
 const restaurantsRoutes = require("./routes/restaurants");
 
 let users = {
@@ -39,22 +40,23 @@ let users = {
   }
 }
 
+app.set("view engine", "ejs");
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
 //         The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes, and uncolored for all other codes.
 app.use(morgan('dev'));
-
 // Log knex SQL queries to STDOUT as well
 app.use(knexLogger(knex));
-
+//set cookie sessions to remember users for 24 hours
 app.use(cookieSession({
   name: "session",
-  keys: ["key1", "key2"]
+  keys: ["key1", "key2"],
+  maxAge: 24 * 60 * 60 * 1000 // cookie expires in 24 hours
 }));
-
-app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+//use flash messages
+app.use(flash());
 
 app.use("/styles", sass({
   src: __dirname + "/styles",
@@ -119,34 +121,45 @@ app.post("/login", (req, res) =>{
   let password = req.body.password;
 
   if (!email || !password) {
-    return res.status(400).send("Please enter email and/or password.");
+    console.log("no email or password entered");//
+    req.flash('messages', 'Please enter email and/or password.');
+    res.redirect('/login');
+    // return res.status(400).send("Please enter email and/or password.");
   }
   for (let key in users) {
     if (email === users[key].email && bcrypt.compareSync(password, users[key].password)) {
       req.session.user_id = key;
+      req.flash('messages', 'login is a success!');
       return res.redirect("/");
     }
   }
-  res.status(403).send("Incorrect email and/or password.");
+  req.flash('messages', 'Incorrect email and/or password!');
+  res.render('login');
+  // res.status(403).send("Incorrect email and/or password.");
 })
 
 app.post("/logout", (req, res) => {
   req.session.user_id = null;
-  res.redirect("/");
+  req.flash('messages', 'logout is a success!');
+  return res.redirect("/");
 });
 
 app.post("/register", (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
-  let user_id = randomPass(email);
+  let user_id = email;
   // Did they enter an e-mail address or password?
   if (!email || !password) {
-    return res.status(400).send("Please enter email and/or password.");
+    req.flash('messages', 'Email or password not entered.');
+    res.render('register');
+    // return res.status(400).send("Please enter email and/or password.");
   }
   // Checking if user with already exists
   for (let key in users) {
     if (email === users[key].email) {
-      return res.status(400).send("User already exists!");
+      req.flash('messages', 'User already exists!');
+      res.render('register');
+      // return res.status(400).send("User already exists!");
     }
   }
   users[user_id] = {
@@ -161,14 +174,3 @@ app.post("/register", (req, res) => {
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
 });
-
-function generateRandomString() {
-  var randomString = "";
-  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let stringLength = 6;
-
-  function pickRandom() {
-    return chars[Math.floor(Math.random() * chars.length)];
-  }
-  return randomString = Array.apply(null, Array(stringLength)).map(pickRandom).join('');
-}
