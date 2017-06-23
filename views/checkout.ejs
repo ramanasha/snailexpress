@@ -16,30 +16,16 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              <img class="thumbnail" src="https://placehold.it/100x100">
-              Item 1
-            </td>
-            <td>20</td>
-            <td>$1.00</td>
-          </tr>
-          <tr>
-            <td>
-              <img class="thumbnail" src="https://placehold.it/100x100">
-              Item 2
-            </td>
-            <td>20</td>
-            <td>$1.00</td>
-          </tr>
-          <tr>
-            <td>
-              <img class="thumbnail" src="https://placehold.it/100x100">
-              Item 3
-            </td>
-            <td>20</td>
-            <td>$1.00</td>
-          </tr>
+          <% cart.forEach((item) => { %>
+            <tr>
+              <td>
+                <img class="thumbnail" src="https://placehold.it/100x100">
+                <%= item.name %>
+              </td>
+              <td><%= item.quantity %></td>
+              <td>$<%= item.price %></td>
+            </tr>
+          <% }); %>
         </tbody>
         <tfoot>
           <tr>
@@ -47,7 +33,7 @@
             <td></td>
             <td>
               Subtotal:
-              <span class="subtotal">$30.00</span>
+              <span class="subtotal">$<%= subtotal %></span>
             </td>
           </tr>
         </tfoot>

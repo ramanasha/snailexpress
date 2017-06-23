@@ -104,9 +104,37 @@ app.get("/", (req, res) => {
 
 //checkout page
 app.get("/checkout", (req, res) => {
-  res.render("checkout", createTemplateVars(req, {
-    cart: req.cookies.cart
-  }));
+  const cartCookie = req.cookies.cart ? JSON.parse(req.cookies.cart) : [];
+  const cartIds = cartCookie.map((item) => item.inventoryId);
+  
+  const cartQuantity = cartCookie.reduce((memo, item) => {
+    memo[item.inventoryId] = item.quantity;
+    return memo;
+  }, {});
+
+  InventoryDataHelper.getInventoryByIds(cartIds)
+    .then((items) => {
+      items = items.map((item) => {
+        item.quantity = cartQuantity[item.id];
+        return item;
+      });
+      
+      // FIXME make sure we don't have negative stock
+      console.log(items);
+      const subtotal = items.reduce((sum, item) => {
+        return sum + item.price * item.quantity;
+      }, 0).toFixed(2);
+      const total = (subtotal * 1.13).toFixed(2);
+      res.render("checkout", createTemplateVars(req, {
+        cart: items,
+        subtotal,
+        total
+      }));
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err.message });
+    });
+  
 });
 
 //login and registration
