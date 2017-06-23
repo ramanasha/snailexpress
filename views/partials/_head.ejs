@@ -10,7 +10,7 @@
   <script type="text/javascript" src="/scripts/cart.js"></script>
 
   <title>SNAIL EXPRESS</title>
-  
+
 </head>
 
 <nav class="top-bar">
@@ -27,7 +27,11 @@
           <li><button type="button" class="button" onclick="window.location.href='/register'">Register</button></li>
           <li><button type="button" class="button" onclick="window.location.href='/login'">Login</button></li>
         <% } else { %>
-          <li><button type="button" class="button" onclick="window.location.href='/'">Logout</button></li>
+          <li>
+            <form action="/logout" method="POST">
+              <input class="button" type="submit" value="Logout">
+            </form>
+          </li>
           <span style="float: right; margin-right: 10px"> Hello, <%= user.email %>! </span>
         <% } %>
       </ul>

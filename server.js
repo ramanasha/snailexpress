@@ -83,33 +83,34 @@ app.use("/api/inventories", inventoriesRoutes(InventoryDataHelper));
 app.use("/api/orders", ordersRoutes(OrderDataHelper, InventoryDataHelper));
 app.use("/api/restaurants", restaurantsRoutes(RestaurantDataHelper));
 
+function createTemplateVars(req) {
+  return {
+    user: users[req.session.user_id]
+  };
+}
+
 // Home page
 app.get("/", (req, res) => {
-  res.render("index");
+  res.render("index", createTemplateVars(req));
 });
 
 //checkout page
 app.get("/checkout", (req, res) => {
-  res.render("checkout");
+  res.render("checkout", createTemplateVars(req));
 });
 
 //login and registration
 app.get("/login", (req, res) => {
-  let templateVars = {
-      user: users[req.session.user_id]
-    }
+  let templateVars = createTemplateVars(req);
   if (templateVars.user) {
     res.redirect("/");
   } else {
-    res.render("login");
+    res.render("login", templateVars);
   }
 });
 
 app.get("/register", (req, res) => {
-  let templateVars = {
-    user: users[req.session.user_id]
-  };
-  res.render("register", templateVars);
+  res.render("register", createTemplateVars(req));
 });
 
 //APP POST//
