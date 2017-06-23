@@ -9,11 +9,15 @@
     <div class="container large-6 large-offset-3 columns">
       <h2>Sign In</h2>
       <form action="/login" method="POST">
+        <% for (var i=0; i < messages.length; i++) { %>
+            <div class="alert callout"><%= messages[i] %></div>
+        <% } %>
         <label for="email"> Email:</label>
         <input id="email" type="email" name="email" placeholder="email"/>
         <label for="password"> Password:</label>
         <input id="password" type="password" name="password" placeholder="password"/>
         <input class="expanded button" type="submit" value="Sign in">
+
       </form>
       <div class="register text-center">New to Snail Express? <a href="../register">Create Account</a></div>
     </div>
