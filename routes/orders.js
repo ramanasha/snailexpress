@@ -2,6 +2,7 @@
 
 const sms = require('../lib/sms-helper');
 const express = require('express');
+const moment = require('moment');
 const router  = express.Router();
 
 // Status => 1. in progress 2: complete 3: cancel
@@ -9,13 +10,14 @@ module.exports = (OrderHelper, InventoryHelper) => {
 
   // [api/orders/] : return all order list
   router.get("/", (req, res) => {
-    OrderHelper.getOrders((err, orders) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-      } else {
+    OrderHelper.getOrders()
+      .then((orders) => {
+        console.log(orders);
         res.json(orders);
-      }
-    });
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err.message });
+      });
   });
 
   // incoming sms example code
@@ -41,6 +43,19 @@ module.exports = (OrderHelper, InventoryHelper) => {
       });
   });
 
+  // [api/orders/:id] : return an order by order id
+  router.get("/:id/order_items", (req, res) => {
+    let id = req.params.id;
+
+    OrderHelper.getOrderItems(id)
+      .then((items) => {
+        res.json(items);
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err.message });
+      });
+  });
+
   // [api/orders/:id/progress] : returun start_timestamp and time_to_complete by order id
   router.get("/:id/progress", (req, res) => {
     let id = req.params.id;
@@ -48,6 +63,25 @@ module.exports = (OrderHelper, InventoryHelper) => {
     OrderHelper.getProgressData(id)
       .then((result) => {
         res.json(result);
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err.message });
+      });
+  });
+
+  // [api/orders/:id/due] : returun due in time
+  router.get("/:id/due", (req, res) => {
+    let id = req.params.id;
+
+    OrderHelper.getTimeToComplete(id)
+      .then((result) => {
+        let currentTime = moment(new Date());
+        let timeToComplete = moment(result.time_to_complete);
+        let due = timeToComplete.diff(currentTime, 'minute');
+        if (due < 0) {
+          due = 0;
+        }
+        res.json(due);
       })
       .catch((err) => {
         res.status(500).json({ error: err.message });
@@ -100,7 +134,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
 
     OrderHelper.updateTime(id, min)
       .then(() => {
-        res.json(orders);
+        res.status(200).send();
       })
       .catch((err) => {
         res.status(500).json({ error: err.message });

@@ -94,7 +94,7 @@ app.use("/api/orders", ordersRoutes(OrderDataHelper, InventoryDataHelper));
 app.use("/api/restaurants", restaurantsRoutes(RestaurantDataHelper));
 
 function createTemplateVars(req, templateVars = {}) {
-  templateVars.users = users[req.session.user_id];
+  templateVars.user = users[req.session.user_id];
   templateVars.messages = req.flash('messages');
   templateVars.googleMapsAPIKey = GOOGLE_MAPS_API_KEY;
   return templateVars;
@@ -102,7 +102,15 @@ function createTemplateVars(req, templateVars = {}) {
 
 // Home page
 app.get("/", (req, res) => {
-  res.render("index", createTemplateVars(req));
+  InventoryDataHelper.getInventories()
+    .then((items) => {
+      res.render("index", createTemplateVars(req, {
+        items
+      }));
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err.message });
+    });
 });
 
 //checkout page
@@ -114,6 +122,8 @@ app.get("/checkout", (req, res) => {
     memo[item.inventoryId] = item.quantity;
     return memo;
   }, {});
+
+  console.log("cart Ids: ", cartIds);
 
   InventoryDataHelper.getInventoryByIds(cartIds)
     .then((items) => {
@@ -154,17 +164,12 @@ app.get("/register", (req, res) => {
   res.render("register", createTemplateVars(req));
 });
 
-app.get("/maps", (req, res) => {
-  res.render("maps", createTemplateVars(req));
-});
-
 //APP POST//
 app.post("/login", (req, res) =>{
   let email = req.body.email;
   let password = req.body.password;
 
   if (!email || !password) {
-    console.log("no email or password entered");//
     req.flash('messages', 'Please enter email and/or password.');
     return res.redirect('/login');
   }
@@ -217,7 +222,17 @@ app.get("/order_status", (req, res) => {
 
 // order management page
 app.get("/order_management", (req, res) => {
-  res.render("order_management");
+  OrderDataHelper.getOrders()
+  .then((orders) => {
+    res.render("order_management", createTemplateVars(req, {
+      orders: orders
+    }));
+  })
+});
+
+// inventory_management page
+app.get("/inventory_management", (req, res) => {
+  res.render("inventory_management");
 });
 
 app.listen(PORT, () => {

@@ -17,92 +17,73 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              <img class="thumbnail" src="https://placehold.it/100x100">
-              Bobby Jenkins
-            </td>
-            <td>1 minute ago</td>
-            <td>$1.00</td>
-            <td>Incomplete</td>
-          </tr>
-          <tr>
-            <td>
-              <img class="thumbnail" src="https://placehold.it/100x100">
-              John Jenkins
-            </td>
-            <td>3 minutes ago</td>
-            <td>$1.00</td>
-            <td>Incomplete</td>
-          </tr>
+          <%
+            orders.forEach( function(order, index) {
+          %>
+              <tr class="orders" data-order-id="<%=order.id%>" data-customer-id="<%=order.customer_id%>" data-start-time="<%=order.start_timestamp%>" data-end-time="<%=order.time_to_complete%>">
+                <td>
+                <img class="thumbnail" src="https://placehold.it/100x100">
+                  <%=order.name%>
+               </td>
+                <td>
+                  <span data-livestamp="<%=order.start_timestamp%>"></span>
+                </td>
+                <td><%=order.total_price%></td>
+                <td><%=order.status%></td>
+              </tr>
+          <%
+            });
+          %>
         </tbody>
       </table>
       <div class="secondary callout">
         Complete orders older than 30 minutes are hidden.
       </div>
     </div>
-    
-    <div class="column large-5">
+
+    <div class="column large-5" id="order_detail">
       <h2>Order</h2>
-      
+
       <h3>Items</h3>
-      <ul>
-        <li>
-          <div class="row">
-            <div class="column small-3 text-center"><img class="thumbnail" src="https://placehold.it/100x100"></div>
-            <div class="column small-9">
-              <h5>Item 1</h5>
-              x 20<br />
-              $1.00
+      <ul class="order-items">
+<!--           <li>
+            <div class="row">
+              <div class="column small-3 text-center"><img class="thumbnail" src=""></div>
+              <div class="column small-9">
+                <h5>item</h5>
+                x 2<br />
+                $50
+              </div>
             </div>
-          </div>
-        </li>
-        <li>
-          <div class="row">
-            <div class="column small-3 text-center"><img class="thumbnail" src="https://placehold.it/100x100"></div>
-            <div class="column small-9">
-              <h5>Item 2</h5>
-              x 34<br />
-              $2.00
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="row">
-            <div class="column small-3 text-center"><img class="thumbnail" src="https://placehold.it/100x100"></div>
-            <div class="column small-9">
-              <h5>Item 3</h5>
-              x 73<br />
-              $3.00
-            </div>
-          </div>
-        </li>
+          </li> -->
       </ul>
-     
+
       <h3>Customer Information</h3>
       <div class="callout row">
         <div class="column small-3 text-center"><img class="thumbnail" src="https://placehold.it/100x100"></div>
         <div class="column small-9">
-          Bobby Jenkins<br />
-          (342) 435-3723
+          <span id="customer-name">Bobby Jenkins</span><br />
+          <span id="customer-phone">(342) 435-3723</span>
         </div>
       </div>
-      
+
       <div class="text-right">
-        <div>Due in 10 minutes</div>
-        <button class="button">
+        <div>Due in <span id="dueTimer"></span> minutes</div>
+        <button class="button" id="minus-update-time">
           - 10 minutes
         </button>
-        <button class="button">
+        <button class="button" id="plus-update-time">
           + 10 minutes
         </button>
-        <button class="primary button">
+        <button class="primary button" id="complete">
           Complete Order
         </button>
       </div>
-     
+
     </div>
   </div>
+
+  <script type="text/javascript" src="/scripts/order_manage.js"></script>
 </body>
 
 </html>

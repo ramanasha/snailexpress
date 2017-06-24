@@ -1,16 +1,30 @@
 module.exports = (knex) => {
   return {
     getOrders: () => {
+      // Complete orders older than 30 minutes are hidden
+      let timeToCompare = new Date();
+      timeToCompare.setMinutes(timeToCompare.getMinutes() - 30);
       return knex
-              .select("*")
+              .select("orders.id", "customer_id", "time_to_complete", "status", "start_timestamp", "end_timestamp", "total_price", "phone", "name")
               .from("orders")
-              .innerJoin('order_items', 'orders.id', 'order_items.id');
+              .where('start_timestamp', '>', timeToCompare)
+              .orWhere("status", '<>', 'complete')
+              .innerJoin('customers', 'orders.customer_id', 'customers.id')
+              .orderBy('start_timestamp', 'desc');
     },
     getOrderById: (id) => {
       return knex
               .select("*")
               .from("orders")
               .innerJoin('order_items', 'orders.id', 'order_items.order_id')
+              .where("orders.id", id);
+    },
+    getOrderItems: (id) => {
+      return knex
+              .select("*")
+              .from("order_items")
+              .innerJoin('orders', 'order_items.order_id', 'orders.id')
+              .innerJoin('inventories', 'order_items.inventory_id', 'inventories.id')
               .where("orders.id", id);
     },
     insertOrder: (order, customer, orderItems, payment) => {
@@ -41,20 +55,22 @@ module.exports = (knex) => {
     complete: (id) => {
       return knex("orders")
               .where("id", id)
-              .update({end_timestamp: new Date(), status: "2"});
+              .update({end_timestamp: new Date(), status: "complete"});
     },
     cancel: (id) => {
       return knex("orders")
               .where("id", id)
-              .update({end_timestamp: new Date(), status: "3"});
+              .update({end_timestamp: new Date(), status: "canclled"});
     },
     updateTime: (id, min) => {
+      min = Number(min);
       return knex
               .select("time_to_complete")
               .from("orders")
               .where("id", id)
+              .first()
               .then((result) => {
-                let timeToComplete = new Date(result[0].time_to_complete);
+                let timeToComplete = new Date(result.time_to_complete);
                 timeToComplete.setMinutes(timeToComplete.getMinutes() + min);
                 return timeToComplete;
               })
@@ -68,6 +84,14 @@ module.exports = (knex) => {
       return knex
               .select("start_timestamp", "time_to_complete")
               .from("orders")
+              .first()
+              .where("id", id);
+    },
+    getTimeToComplete: (id) => {
+      return knex
+              .select("time_to_complete")
+              .from("orders")
+              .first()
               .where("id", id);
     }
   }
