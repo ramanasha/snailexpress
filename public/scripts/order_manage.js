@@ -1,4 +1,7 @@
 $(document).ready(function() {
+  let dueTimer = null;
+
+  // extend or reduce due time
   function updateTime(id, min) {
     return new Promise(function(resolve, reject) {
       $.ajax({
@@ -15,6 +18,7 @@ $(document).ready(function() {
     });
   }
 
+  // complete order
   function complete(id) {
     return new Promise(function(resolve, reject) {
       $.ajax({
@@ -31,6 +35,7 @@ $(document).ready(function() {
     });
   }
 
+  // get customer infomation
   function getCustomer(id) {
     return new Promise(function(resolve, reject) {
       $.get(`/api/customers/${id}/`, function(customer) {
@@ -42,6 +47,7 @@ $(document).ready(function() {
     });
   }
 
+  // get order item
   function getOrderItems(id) {
     return new Promise(function(resolve, reject){
       $.get(`/api/orders/${id}/order_items`, function(items) {
@@ -53,11 +59,13 @@ $(document).ready(function() {
     });
   }
 
+  // render customer infomation
   function renderCustomerItems(customer) {
     $("#customer-name").text(customer.name);
     $("#customer-phone").text(customer.phone);
   }
 
+  // render order items
   function renderOrderItems(items) {
     $("#order_detail").show();
     $(".order-items").children().remove();
@@ -66,6 +74,22 @@ $(document).ready(function() {
     });
   }
 
+  // start due time checker (check it every 10 sec)
+  function startDueTimeChecker(id) {
+    updateDueTime(id);
+    dueTimer = setInterval(updateDueTime, 10000, id);
+  }
+
+  // get due time from server
+  function updateDueTime(id) {
+    $.get(`/api/orders/${id}/due`, function(dueTime) {
+      $("#dueTimer").text(dueTime);
+    }).fail(function(err) {
+      console.log(err);
+    });
+  }
+
+  // create order element
   function createOrderElement(item) {
     return `<li>
               <div class="row item-id" data-order-id=${item.order_id}>
@@ -82,14 +106,15 @@ $(document).ready(function() {
   $(".orders").click(function(event) {
     let order_id = $(this).attr("data-order-id");
     let customer_id = $(this).attr("data-customer-id");
-    let current_time = moment(new Date());
-    let end_time = moment($(this).attr("data-end-time"));
-    // console.log(current_time);
-    // console.log(end_time);
-    // console.log(end_time.diff(current_time, 'minute'));
     getOrderItems(order_id)
     .then(getCustomer(customer_id))
     .then(function() {
+      // clear interval before start new interval
+      if (dueTimer !== null) {
+        clearInterval(dueTimer);
+      }
+      startDueTimeChecker(order_id);
+
       $("#minus-update-time").click(function(event) {
         updateTime(order_id, -10);
       });

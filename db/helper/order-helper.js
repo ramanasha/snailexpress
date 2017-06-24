@@ -84,6 +84,14 @@ module.exports = (knex) => {
       return knex
               .select("start_timestamp", "time_to_complete")
               .from("orders")
+              .first()
+              .where("id", id);
+    },
+    getTimeToComplete: (id) => {
+      return knex
+              .select("time_to_complete")
+              .from("orders")
+              .first()
               .where("id", id);
     }
   }

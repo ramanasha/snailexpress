@@ -2,6 +2,7 @@
 
 const sms = require('../lib/sms-helper');
 const express = require('express');
+const moment = require('moment');
 const router  = express.Router();
 
 // Status => 1. in progress 2: complete 3: cancel
@@ -62,6 +63,25 @@ module.exports = (OrderHelper, InventoryHelper) => {
     OrderHelper.getProgressData(id)
       .then((result) => {
         res.json(result);
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err.message });
+      });
+  });
+
+  // [api/orders/:id/due] : returun due in time
+  router.get("/:id/due", (req, res) => {
+    let id = req.params.id;
+
+    OrderHelper.getTimeToComplete(id)
+      .then((result) => {
+        let currentTime = moment(new Date());
+        let timeToComplete = moment(result.time_to_complete);
+        let due = timeToComplete.diff(currentTime, 'minute');
+        if (due < 0) {
+          due = 0;
+        }
+        res.json(due);
       })
       .catch((err) => {
         res.status(500).json({ error: err.message });
