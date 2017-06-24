@@ -46,10 +46,14 @@ module.exports = (knex) => {
                       .returning('order_id')
                       .insert(orderItems)
               })
-              .then((id) => {
-                payment.order_id = id[0];
-                return knex("payments") // insert payment
-                .insert(payment)
+              .then((order_id) => {
+                payment.order_id = order_id[0];
+                return new Promise((resolve, reject) => {
+                  knex("payments") // insert payment
+                    .insert(payment)
+                    .then(() => resolve(order_id[0]))
+                    .catch(reject);
+                });
               });
     },
     complete: (id) => {

@@ -58,6 +58,9 @@
       <h2>Payment</h2>
 
       <p>Enter your information to confirm your order.</p>
+      <% messages.forEach((message) => { %>
+        <div class="callout"><%= message %></div>
+      <% }); %> 
       <ul class="tabs" data-tabs id="example-tabs">
         <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">Credit</a></li>
         <li class="tabs-title"><a href="#panel2">Debit</a></li>
@@ -66,7 +69,7 @@
 
       <div class="tabs-content" data-tabs-content="example-tabs">
         <div class="tabs-panel is-active" id="panel1">
-          <form>
+          <form method="POST" action="/checkout" >
             <label>
               Card Name
               <input type="text" placeholder="Joe Smith" />

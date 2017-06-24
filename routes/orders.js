@@ -4,6 +4,7 @@ const sms = require('../lib/sms-helper');
 const express = require('express');
 const moment = require('moment');
 const router  = express.Router();
+const validate = require('validate.js');
 
 // Status => 1. in progress 2: complete 3: cancel
 module.exports = (OrderHelper, InventoryHelper) => {
@@ -43,7 +44,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
       });
   });
 
-  // [api/orders/:id] : return an order by order id
+  // [api/orders/:id/order_items] : return order items by order id
   router.get("/:id/order_items", (req, res) => {
     let id = req.params.id;
 
@@ -56,7 +57,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
       });
   });
 
-  // [api/orders/:id/progress] : returun start_timestamp and time_to_complete by order id
+  // [api/orders/:id/progress] : return start_timestamp and time_to_complete by order id
   router.get("/:id/progress", (req, res) => {
     let id = req.params.id;
 
@@ -141,13 +142,15 @@ module.exports = (OrderHelper, InventoryHelper) => {
       });
   });
 
-  /* json fomat example
+  /* json format example
   {
+    contact: {
+      name: "kim",
+      phone: "222-222-2222",
+    }
     "payment": {
         "type": "1", // 1: credit, 2: debit, 3: pay store
         "credit": {
-          "name": "kim",
-          "phone": "222-222-2222",
           "card_no": "2222-2222-2222-2222",
           "card_cvc": "222",
           "card_expiry": "2022-11-11"
@@ -170,46 +173,146 @@ module.exports = (OrderHelper, InventoryHelper) => {
     }
   }
   */
+  
+  
+  var newOrderConstraints = {
+    "order.items": {
+      presence: true
+    },
+    "order.special_requests": {
+      presence: { allowEmpty: true }
+    },
+    "contact.name": {
+      presence: true
+    },
+    "contact.phone": {
+      presence: true
+    },
+    "order.restaurant_id": {
+      presence: true
+    },
+    "payment": {
+      presence: true
+    },
+    "payment.type": {
+      presence: true
+    }
+  };
+  
+  var orderItemConstraints = {
+    "id": {
+      presence: true,
+    },
+    "qty": {
+      presence: true,
+    }
+  };
+  
+  var creditCardPaymentConstraints = {
+    "credit.card_no": {
+      presence: true,
+      format: {
+        pattern: /^(\d{4}-){3}\d{4}$/,
+        message: "must be in the form 1234-1234-1234-1234."
+      }
+    },
+    "credit.card_cvc": {
+      presence: true,
+      length: {
+        is: 3,
+        wrongLength: "must be three numbers long"
+      },
+      numericality: true
+    },
+    "credit.card_expiry_month": {
+      presence: true,
+      numericality: {
+        greaterThanOrEqualTo: 1,
+        lessThanOrEqualTo: 12,
+        onlyInteger: true,
+        strict: true
+      }
+    },
+    "credit.card_expiry_year": {
+      presence: true,
+      length: {
+        mininum: 4
+      },
+      numericality: {
+        onlyInteger: true,
+        strict: true
+      }
+    }
+  };
+  
   // [api/orders] : create new order
   router.post("/", (req, res) => {
     if (!req.body) {
       res.status(400).json({ error: 'invalid request: no data in POST body'});
       return;
     }
-
+    
+    // request body validation
+    let errors = validate(req.body, newOrderConstraints);
+    
+    // check order items
+    if (req.body.order && req.body.order) {
+      req.body.order.items.forEach((item) => {
+        if (errors) {
+          // add to errors
+          Object.assign(errors, validate(item, orderItemConstraints));
+        } else {
+          errors = validate(item, orderItemConstraints);
+        }
+      });
+    }
+    
+    // check payment
+    let payment = req.body.payment;
+    if (payment && payment.type && payment.type === "credit") {
+      if (errors) {
+        // add to errors
+        Object.assign(errors, validate(payment, creditCardPaymentConstraints));
+      } else {
+        errors = validate(payment, creditCardPaymentConstraints);
+      }
+    }
+    
+    if (errors) {
+      return res.status(400).json(errors);
+    }
+    
     let items = req.body.order.items;
     let specialRequests = req.body.order.special_requests;
     let restaurantId = req.body.order.restaurant_id;
-    let itemsIds = [];
-    let payment = req.body.payment;
+    let name = req.body.name;
+    let phone = req.body.phone;
     let paymentType = req.body.payment.type;
-    let name = null;
-    let phone = null;
-    let cardNo = null;
-    let cardCsc = null;
-    let cardExpiry = null;
-    let email = "";
-    let min = req.body.order.min;
+    let cardNo;
+    let cardCsc;
+    let cardExpiry;
+    let email;
+    // TODO need to calculate this server-side
+    let min = req.body.order.min; // completion time in minutes
 
     if (paymentType === 'credit') { // card
-      name = payment.credit.name;
-      phone = payment.credit.phone;
       cardNo = payment.credit.card_no;
       cardCsc = payment.credit.card_csc;
+      // TODO need to turn this into date
       cardExpiry = payment.credit.card_expiry;
     } else if (paymentType === 'debit') {
-      name = payment.debit.name;
-      phone = payment.debit.phone;
-    } else if (paymentType === 'store') {
-      name = payment.store.name;
-      phone = payment.store.phone;
+      // TODO
+    }
+
+    if (errors) {
+      return res.status(400).json(errors);
     }
 
     // extract all item ids
-    for (let idx in items) {
-      itemsIds.push(items[idx].id);
-    }
-
+    let itemsIds = items.map((item) => item.id);
+    
+    res.send("die before creating real order for testing");
+    return;
     // get price infomation
     InventoryHelper.getPriceByIds(itemsIds)
     .then((result) => {
@@ -225,7 +328,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
 
       return items;
     }).then((items) => {
-      // caculate total price
+      // calculate total price
       let totalPrice = items.reduce((total, current) => {
         return Number(total.price * total.qty) + Number(current.price * current.qty);
       });
@@ -247,12 +350,12 @@ module.exports = (OrderHelper, InventoryHelper) => {
         card_no: cardNo,
         card_csc: cardCsc,
         card_expiry: cardExpiry
-      }
+      };
 
       let customer = {
         phone: phone,
         email: email
-      }
+      };
 
       let orderItems = [];
 
@@ -260,7 +363,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
         let data = {
           inventory_id: items[idx].id,
           qty: items[idx].qty
-        }
+        };
         orderItems.push(data);
       }
 
@@ -274,4 +377,4 @@ module.exports = (OrderHelper, InventoryHelper) => {
   });
 
   return router;
-}
+};
