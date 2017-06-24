@@ -33,13 +33,16 @@ const inventoriesRoutes = require("./routes/inventories");
 const ordersRoutes   = require("./routes/orders");
 const restaurantsRoutes = require("./routes/restaurants");
 
+//some test example users
 let users = {
   "userRandomID": {
+    name: "User 1",
     id: "userRandomID",
     email: "user@example.com",
     password: bcrypt.hashSync("test1")
   },
  "user2RandomID": {
+    name: "User 2",
     id: "user2RandomID",
     email: "user2@example.com",
     password: bcrypt.hashSync("test2")
@@ -102,10 +105,31 @@ function createTemplateVars(req, templateVars = {}) {
 
 // Home page
 app.get("/", (req, res) => {
-  InventoryDataHelper.getInventories()
+
+  //cart on left of main page after scrolling down
+  const cartCookie = req.cookies.cart ? JSON.parse(req.cookies.cart) : [];
+  const cartIds = cartCookie.map((item) => item.inventoryId);
+
+  const cartQuantity = cartCookie.reduce((memo, item) => {
+    memo[item.inventoryId] = item.quantity;
+    return memo;
+  }, {});
+
+  const cartInventory = InventoryDataHelper.getInventoryByIds(cartIds)
     .then((items) => {
+      return items.map((item) => {
+        item.quantity = cartQuantity[item.id];
+        return item;
+      });
+    });
+  //inventory items to show on main page
+  const allInventory = InventoryDataHelper.getInventories();
+
+  Promise.all([cartInventory, allInventory])
+    .then(([cartInventory, allInventory]) => {
       res.render("index", createTemplateVars(req, {
-        items
+        items: allInventory,
+        cart: cartInventory
       }));
     })
     .catch((err) => {
@@ -166,6 +190,7 @@ app.get("/register", (req, res) => {
 
 //APP POST//
 app.post("/login", (req, res) =>{
+  let name = req.body.name;
   let email = req.body.email;
   let password = req.body.password;
 
@@ -185,12 +210,14 @@ app.post("/login", (req, res) =>{
 });
 
 app.post("/logout", (req, res) => {
+  //logout to remove cookie session with the user_id.
   req.session.user_id = null;
   req.flash('messages', 'logout is a success!');
   return res.redirect("/");
 });
 
 app.post("/register", (req, res) => {
+  let name = req.body.name;
   let email = req.body.email;
   let password = req.body.password;
   let user_id = email;
@@ -207,6 +234,7 @@ app.post("/register", (req, res) => {
     }
   }
   users[user_id] = {
+    name: name,
     id: user_id,
     email: email,
     password: bcrypt.hashSync(password)

@@ -45,3 +45,9 @@ function deleteItem (inventoryId) {
   }
   Cookies.set('cart', JSON.stringify(cart));
 }
+
+$(document).ready(() => {
+  $('#').click(function() {
+    cart();
+  });
+});
