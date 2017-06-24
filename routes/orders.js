@@ -9,13 +9,14 @@ module.exports = (OrderHelper, InventoryHelper) => {
 
   // [api/orders/] : return all order list
   router.get("/", (req, res) => {
-    OrderHelper.getOrders((err, orders) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-      } else {
+    OrderHelper.getOrders()
+      .then((orders) => {
+        console.log(orders);
         res.json(orders);
-      }
-    });
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err.message });
+      });
   });
 
   // incoming sms example code
@@ -35,6 +36,19 @@ module.exports = (OrderHelper, InventoryHelper) => {
     OrderHelper.getOrderById(id)
       .then((orders) => {
         res.json(orders);
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err.message });
+      });
+  });
+
+  // [api/orders/:id] : return an order by order id
+  router.get("/:id/order_items", (req, res) => {
+    let id = req.params.id;
+
+    OrderHelper.getOrderItems(id)
+      .then((items) => {
+        res.json(items);
       })
       .catch((err) => {
         res.status(500).json({ error: err.message });
@@ -100,7 +114,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
 
     OrderHelper.updateTime(id, min)
       .then(() => {
-        res.json(orders);
+        res.status(200).send();
       })
       .catch((err) => {
         res.status(500).json({ error: err.message });
