@@ -186,7 +186,17 @@ app.get("/order_status", (req, res) => {
 
 // order management page
 app.get("/order_management", (req, res) => {
-  res.render("order_management");
+  OrderDataHelper.getOrders()
+  .then((orders) => {
+    res.render("order_management", createTemplateVars(req, {
+      orders: orders
+    }));
+  })
+});
+
+// inventory_management page
+app.get("/inventory_management", (req, res) => {
+  res.render("inventory_management");
 });
 
 app.listen(PORT, () => {

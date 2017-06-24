@@ -9,6 +9,7 @@ module.exports = (knex) => {
       return knex
               .select("*")
               .from("customers")
+              .first()
               .where("id", id);
     }
   }
