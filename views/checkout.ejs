@@ -69,28 +69,28 @@
 
       <div class="tabs-content" data-tabs-content="example-tabs">
         <div class="tabs-panel is-active" id="panel1">
-          <form method="POST" action="/checkout" >
+          <form class="credit" method="POST" action="/checkout" >
             <label>
-              Card Name
-              <input type="text" placeholder="Joe Smith" />
+              Name
+              <input class="name" name="name" type="text" placeholder="Joe Smith" />
             </label>
             <label>
               Phone Number
-              <input type="text" placeholder="324534573" />
+              <input class="phoneno" name="phoneno" type="text" placeholder="324534573" />
             </label>
             <label>
               Card Number
-              <input type="text" placeholder="XXXX-XXXX-XXXX-XXXX" />
+              <input class="card_number" name="card_number" type="text" placeholder="XXXX-XXXX-XXXX-XXXX" />
             </label>
             <div class="row">
               <label class="small-6 column">
                 CVC
-                <input type="text" placeholder="XXX" />
+                <input class="card_cvc" name="card_cvc" type="number" placeholder="XXX" />
               </label>
               <label class="small-6 column">
                 Expiry
-                <input type="text" class="column small-6" placeholder="MM" />
-                <input type="text" class="column small-6" placeholder="YY" />
+                <input class="card_expiry_month" name="card_expiry_month" type="number" class="column small-6" placeholder="MM" />
+                <input class="card_expiry_year" name="card_expiry_year" type="number" class="column small-6" placeholder="YYYY" />
               </label>
             </div>
             <button type="submit" class="expanded button">Pay Now</button>

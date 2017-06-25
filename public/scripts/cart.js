@@ -1,47 +1,44 @@
 function addItem (inventoryId, quantity){
-  var cookie = Cookies.get('cart');
-  var cart;
-  if (!cookie) {
-    cart = [];
-  } else {
-    cart = JSON.parse(cookie);
-  }
+  var cart = getCart();
   cart.push({
     "inventoryId": inventoryId,
     "quantity": quantity
   })
-  Cookies.set('cart', JSON.stringify(cart));
+  saveCart(cart);
 }
 
 function updateItem (inventoryId, quantity) {
-  var cookie = Cookies.get('cart');
-  var cart;
-  if (!cookie) {
-    cart = [];
-  } else {
-    cart = JSON.parse(cookie);
-  }
+  var cart = getCart();
   for (var item of cart) {
     if (item.inventoryId === inventoryId) {
        item.quantity = quantity;
     }
   }
-  Cookies.set('cart', JSON.stringify(cart));
+  saveCart(cart);
 }
 
 function deleteItem (inventoryId) {
-  var cookie = Cookies.get('cart');
-  var cart;
-  if (!cookie) {
-    cart = [];
-  } else {
-    cart = JSON.parse(cookie);
-  }
+  var cart = getCart();
   for (var i = 0; i < cart.length; i++) {
     if (cart[i].inventoryId === inventoryId) {
       cart.splice(i, 1);
       break;
     }
   }
+  saveCart(cart);
+}
+
+function getCart() {
+    var cookie = Cookies.get('cart');
+  var cart;
+  if (!cookie) {
+    cart = [];
+  } else {
+    cart = JSON.parse(cookie);
+  }
+  return cart;
+}
+
+function saveCart(cart) {
   Cookies.set('cart', JSON.stringify(cart));
 }
