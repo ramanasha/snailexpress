@@ -1,11 +1,115 @@
 <html lang="en">
 <%- include("partials/_head") %>
 <header class="text-center">
-    <h1> Inventory Mangement </h1>
+    <h3> Inventory Managament </h3>
 </header>
 
 <body>
+  <div class="row">
+    <div class="column large-12">
+      <div class="text-right">
+        <a data-open="formModal" id="button-new" class="button">New</a>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="text-center">id</th>
+            <th class="text-center">name</th>
+            <th class="text-center">price</th>
+            <th class="text-center">stock</th>
+            <th class="text-center">weight</th>
+            <th class="text-center">calories</th>
+            <th class="text-center">description</th>
+            <th class="text-center">image</th>
+            <th class="text-center"></th>
+          </tr>
+        </thead>
+        <tbody id="inventory-table">
+            <%
+              inventory.forEach( function(item, index) {
+            %>
+              <tr class="table-item text-center">
+                <td class="item-id"><%=item.id%></td>
+                <td class="item-name"><%=item.name%></td>
+                <td class="item-price">$<%=item.price%></td>
+                <td class="item-stock"><%=item.stock%></td>
+                <td class="item-weight"><%=item.weight%></td>
+                <td class="item-calories"><%=item.calories%></td>
+                <td class="item-description"><%=item.description%></td>
+                <td class="item-image"><img src="../images/products/<%=item.image%>"></td>
+                <td>
+                  <a data-open="formModal" class="button button-mod">Mod</a>
+                  <button class="button button-del">Del</button>
+                </td>
+              </tr>
+            <%
+              });
+            %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
+  <!-- This is the first modal -->
+  <div class="reveal small" id="formModal" data-reveal>
+    <div class="alert callout small" data-closable style="display:none">
+      <h5>This is Important!</h5>
+      <p>But when you're done reading it, click the close button in the corner to dismiss this alert.</p>
+      <p>I'm using the default <code>data-closable</code> parameters, and simply fade out.</p>
+      <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="column large-10">
+      <h4><span id="modal-title">Create</span> Inventory</h4>
+        <form id="form-inventory" enctype="multipart/form-data">
+          <div class="row">
+            <div class="medium-10">
+              <label>name
+                <input type="text" name="name" id="name" placeholder="name">
+              </label>
+            </div>
+            <div class="medium-10">
+              <label>price
+                <input type="number" name="price" id="price" step="any" placeholder="price">
+              </label>
+            </div>
+            <div class="medium-10">
+              <label>stock
+                <input type="number" name="stock" id="stock" placeholder="stock">
+              </label>
+            </div>
+            <div class="medium-10">
+              <label>weight
+                <input type="number" name="weight" id="weight" placeholder="weight">
+              </label>
+            </div>
+            <div class="medium-10">
+              <label>calories
+                <input type="number" name="calories" id="calories" placeholder="calories">
+              </label>
+            </div>
+            <div class="medium-10">
+              <label>description
+                <textarea type="text" name="description" id="description" placeholder="description"></textarea>
+              </label>
+            </div>
+            <div class="medium-10">
+              <input type="file" name="product" id="file">
+            </div>
+            <div class="medium-10">
+              <input type="submit" id="button-submit" class="button" value="Sumbit">
+            </div>
+          </div>
+        </form>
+    </div>
+    <button class="close-button" data-close aria-label="Close reveal" type="button">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <script type="text/javascript" src="/scripts/inventory_manage.js"></script>
 </body>
 
 </html>
+

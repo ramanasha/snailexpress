@@ -3,7 +3,8 @@ module.exports = (knex) => {
     getInventories: () => {
       return knex
               .select("*")
-              .from("inventories");
+              .from("inventories")
+              .orderBy("id", "desc");
     },
     getInventoryByName: (name) => {
       return knex

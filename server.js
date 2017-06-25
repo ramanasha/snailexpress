@@ -232,7 +232,21 @@ app.get("/order_management", (req, res) => {
 
 // inventory_management page
 app.get("/inventory_management", (req, res) => {
-  res.render("inventory_management");
+  InventoryDataHelper.getInventories()
+  .then((inventory) => {
+    res.render("inventory_management", createTemplateVars(req, {
+      inventory: inventory
+    }));
+  })
+});
+
+app.post("/inventory_management", (req, res) => {
+  InventoryDataHelper.getInventories()
+  .then((inventory) => {
+    res.render("inventory_management", createTemplateVars(req, {
+      inventory: inventory
+    }));
+  })
 });
 
 app.listen(PORT, () => {
