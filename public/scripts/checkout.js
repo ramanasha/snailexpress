@@ -62,7 +62,11 @@ $(function() {
     .fail(function (errors) {
       var response = errors.responseJSON;
       console.log(response);
-      if (response) {
+      if (response && response.error) {
+        // shouldn't have this happen... give human error message
+        // probably a code error
+        prependErrors(["Something went wrong. Try again later."], $this);
+      } else if (response) {
         if (response["order.items"]) {
           prependErrors(response["order.items"], $this);
         }

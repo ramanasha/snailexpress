@@ -287,13 +287,13 @@ module.exports = (OrderHelper, InventoryHelper) => {
     let items = req.body.order.items;
     let specialRequests = req.body.order.special_requests;
     let restaurantId = req.body.order.restaurant_id;
-    let name = req.body.name;
-    let phone = req.body.phone;
+    let name = req.body.contact.name;
+    let phone = req.body.contact.phone;
     let paymentType = req.body.payment.type;
     let cardNo;
     let cardCsc;
     let cardExpiry;
-    let email;
+    let email = ""; // TODO ??? for email
     // TODO need to calculate this server-side
     let min = req.body.order.min; // completion time in minutes
 
@@ -312,9 +312,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
 
     // extract all item ids
     let itemsIds = items.map((item) => item.id);
-    
-    res.send("{\"message\": \"die before creating real order for testing\"}");
-    return;
+
     // get price infomation
     InventoryHelper.getPriceByIds(itemsIds)
     .then((result) => {
