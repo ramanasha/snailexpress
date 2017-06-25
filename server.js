@@ -193,7 +193,6 @@ app.get("/register", (req, res) => {
 
 //APP POST//
 app.post("/login", (req, res) =>{
-  let name = req.body.name;
   let email = req.body.email;
   let password = req.body.password;
 
@@ -201,15 +200,23 @@ app.post("/login", (req, res) =>{
     req.flash('messages', 'Please enter email and/or password.');
     return res.redirect('/login');
   }
-  for (let key in users) {
-    if (email === users[key].email && bcrypt.compareSync(password, users[key].password)) {
-      req.session.user_id = key;
-      req.flash('messages', 'login is a success!');
-      return res.redirect("/");
+
+  UserDataHelper.getUserByEmail(email)
+  .then((user) => {
+    if (user.length > 0) {
+      if (bcrypt.compareSync(password, user[0].password)) {
+        req.session.user_id = user[0].email;
+        req.flash('messages', 'login is a success!');
+        return res.redirect("/");
+      } else {
+        req.flash('messages', 'Incorrect password!');
+        return res.redirect('/login');
+      }
+    } else {
+      req.flash('messages', 'Incorrect email!');
+      return res.redirect('/login');
     }
-  }
-  req.flash('messages', 'Incorrect email and/or password!');
-  return res.redirect('/login');
+  });
 });
 
 app.post("/logout", (req, res) => {
@@ -230,20 +237,26 @@ app.post("/register", (req, res) => {
     return res.redirect('/register');
   }
   // Checking if user with already exists
-  for (let key in users) {
-    if (email === users[key].email) {
-      req.flash('messages', 'User already exists!');
+  UserDataHelper.getUserByEmail(email)
+  .then((result) => {
+    if (result.length > 0) {
+       req.flash('messages', 'User already exists!');
       return res.redirect('/register');
+    } else {
+      let user = {
+        name: name,
+        email: email,
+        password: bcrypt.hashSync(password)
+      };
+
+      UserDataHelper.insertUser(user)
+      .catch((err) => {
+        console.log(err);
+      });
+      req.session.user_id = user_id;
+      return res.redirect("/");
     }
-  }
-  users[user_id] = {
-    name: name,
-    id: user_id,
-    email: email,
-    password: bcrypt.hashSync(password)
-  };
-  req.session.user_id = user_id;
-  return res.redirect("/");
+  });
 });
 
 // order status page
