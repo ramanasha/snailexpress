@@ -1,13 +1,15 @@
 function createProgressBar(selector, startTime, endTime) {
   console.log(startTime, endTime);
   var el = $(selector);
+  el.hide();
   el.append('<img src="https://placehold.it/100x100" style="position: relative; display:block; transform: translateX(-50%);">');
   el.append('<div class="bar-container" style="background:lightgrey"><span class="bar" style="background: black; height: 10px; display: inline-block"></span></div>');
-
+  
   var bar = el.find('.bar');
   var img = el.find('img');
 
   function updateProgressBar() {
+    el.show();
     var interval = endTime.getTime() - startTime.getTime();
     var currentTime = new Date().getTime();
     var factor =  1 - ((endTime.getTime() - currentTime) / interval);
