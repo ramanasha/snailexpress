@@ -33,22 +33,6 @@ const inventoriesRoutes = require("./routes/inventories");
 const ordersRoutes   = require("./routes/orders");
 const restaurantsRoutes = require("./routes/restaurants");
 
-//some test example users
-let users = {
-  "userRandomID": {
-    name: "User 1",
-    id: "userRandomID",
-    email: "user@example.com",
-    password: bcrypt.hashSync("test1")
-  },
- "user2RandomID": {
-    name: "User 2",
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: bcrypt.hashSync("test2")
-  }
-};
-
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
