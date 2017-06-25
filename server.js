@@ -248,7 +248,7 @@ app.post("/register", (req, res) => {
 
 // order status page
 app.get("/order_status", (req, res) => {
-  res.render("order_status");
+  res.render("order_status", createTemplateVars(req));
 });
 
 // order management page
