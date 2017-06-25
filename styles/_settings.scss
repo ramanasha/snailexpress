@@ -243,9 +243,9 @@ $breadcrumbs-item-slash: true;
 $button-padding: 0.85em 1em;
 $button-margin: 0 0 $global-margin 0;
 $button-fill: solid;
-$button-background: $primary-color;
-$button-background-hover: scale-color($button-background, $lightness: -15%);
-$button-color: $white;
+$button-background: $white;
+$button-background-hover: scale-color($button-background, $lightness: -4%);
+$button-color: #131416;
 $button-color-alt: $black;
 $button-radius: $global-radius;
 $button-sizes: (
@@ -259,6 +259,10 @@ $button-opacity-disabled: 0.25;
 $button-background-hover-lightness: -20%;
 $button-hollow-hover-lightness: -50%;
 $button-transition: background-color 0.25s ease-out, color 0.25s ease-out;
+.button {
+  border: 1px solid #727883 !important;
+}
+
 
 // 12. Button Group
 // ----------------
@@ -540,23 +544,48 @@ $switch-paddle-transition: all 0.25s ease-out;
 // 32. Table
 // ---------
 
-$table-background: $white;
-$table-color-scale: 5%;
-$table-border: 1px solid smart-scale($table-background, $table-color-scale);
-$table-padding: rem-calc(8 10 10);
-$table-hover-scale: 2%;
-$table-row-hover: darken($table-background, $table-hover-scale);
-$table-row-stripe-hover: darken($table-background, $table-color-scale + $table-hover-scale);
-$table-is-striped: true;
-$table-striped-background: smart-scale($table-background, $table-color-scale);
-$table-stripe: even;
-$table-head-background: smart-scale($table-background, $table-color-scale / 2);
-$table-head-row-hover: darken($table-head-background, $table-hover-scale);
-$table-foot-background: smart-scale($table-background, $table-color-scale);
-$table-foot-row-hover: darken($table-foot-background, $table-hover-scale);
-$table-head-font-color: $body-font-color;
-$table-foot-font-color: $body-font-color;
-$show-header-for-stacked: false;
+// $table-background: $white;
+// $table-color-scale: 5%;
+// $table-border: 1px solid smart-scale($table-background, $table-color-scale);
+// $table-padding: rem-calc(8 10 10);
+// $table-hover-scale: 2%;
+// $table-row-hover: darken($table-background, $table-hover-scale);
+// $table-row-stripe-hover: darken($table-background, $table-color-scale + $table-hover-scale);
+// $table-is-striped: true;
+// $table-striped-background: smart-scale($table-background, $table-color-scale);
+// $table-stripe: even;
+// $table-head-background: smart-scale($table-background, $table-color-scale / 2);
+// $table-head-row-hover: darken($table-head-background, $table-hover-scale);
+// $table-foot-background: smart-scale($table-background, $table-color-scale);
+// $table-foot-row-hover: darken($table-foot-background, $table-hover-scale);
+// $table-head-font-color: $body-font-color;
+// $table-foot-font-color: $body-font-color;
+// $show-header-for-stacked: false;
+table {
+  border-collapse: collapse;
+  display: table;
+  border: 1px solid #666b76;
+  
+  thead {
+    background: #F9F9F9;
+    border-bottom: 1px solid #666b76;
+  }
+
+  th, td {
+    border: 1px solid #666b76;
+    text-align: center !important;
+  }
+
+  tbody {
+    td {
+      background: white;
+    }
+  }
+
+  .orders {
+    cursor: pointer;
+  }
+}
 
 // 33. Tabs
 // --------
@@ -613,9 +642,37 @@ $tooltip-radius: $global-radius;
 // -----------
 
 $topbar-padding: 0.5rem;
-$topbar-background: $light-gray;
+$topbar-background: $white;
 $topbar-submenu-background: $topbar-background;
 $topbar-title-spacing: 0.5rem 1rem 0.5rem 0;
 $topbar-input-width: 200px;
 $topbar-unstack-breakpoint: medium;
 
+#inventory .item {
+  border: 1px solid $light-gray;
+  padding: 10px;
+  margin: 0 5px;
+  margin-bottom: 5px;
+
+  &:hover {
+    border: 1px solid scale-color($light-gray, $lightness: -10%);;
+  }
+}
+
+.main-img {
+  border: 1px solid $light-gray;
+  padding: 10px;
+}
+
+.index-inventory {
+  margin-top: 15px;
+
+  #cart {
+    border: 1px solid $light-gray;
+    padding: 5px 30px;
+
+    input {
+      width: 50px;
+    }
+  }
+}

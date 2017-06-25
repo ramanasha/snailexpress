@@ -4,22 +4,21 @@
 
   <body>
     <!-- This is our big wide header photo and message, if you want -->
-    <h1>Hello World!</h1>
     <div class="row">
-      <img src="https://placehold.it/2000x750&amp;text=1st">
+      <img src="./images/main.png" width="2000px" height="750px" class="main-img">
     </div>
 
     <!-- CART -->
-    <div class="row">
-      <div class="column large-3">
-        <h2 style="text-align: center">What's in My Cart?</h2>
+    <div class="row index-inventory">
+      <div class="column large-3 cart">
+        <h4 style="text-align: center">What's in My Cart?</h4>
         <div id="cart">
         </div>
       </div>
 
       <!-- INVENTORY -->
       <div id="inventory" class="column large-9 small-up-2 large-up-3">
-        <h2> Try them all! </h2>
+        <h4> Try them all! </h4>
         <% items.forEach((item) => { %>
         <div class="column item" data-id="<%=item.id%>">
           <!-- <img class="thumbnail" src="<%= item.image %>"> -->
