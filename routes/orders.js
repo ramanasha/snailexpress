@@ -209,14 +209,14 @@ module.exports = (OrderHelper, InventoryHelper) => {
   };
   
   var creditCardPaymentConstraints = {
-    "credit.card_no": {
+    "payment.credit.card_no": {
       presence: true,
       format: {
         pattern: /^(\d{4}-){3}\d{4}$/,
         message: "must be in the form 1234-1234-1234-1234."
       }
     },
-    "credit.card_cvc": {
+    "payment.credit.card_cvc": {
       presence: true,
       length: {
         is: 3,
@@ -224,7 +224,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
       },
       numericality: true
     },
-    "credit.card_expiry_month": {
+    "payment.credit.card_expiry_month": {
       presence: true,
       numericality: {
         greaterThanOrEqualTo: 1,
@@ -233,7 +233,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
         strict: true
       }
     },
-    "credit.card_expiry_year": {
+    "payment.credit.card_expiry_year": {
       presence: true,
       length: {
         mininum: 4
@@ -244,7 +244,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
       }
     }
   };
-  
+
   // [api/orders] : create new order
   router.post("/", (req, res) => {
     if (!req.body) {
@@ -258,11 +258,12 @@ module.exports = (OrderHelper, InventoryHelper) => {
     // check order items
     if (req.body.order && req.body.order) {
       req.body.order.items.forEach((item) => {
+        const newErrors = validate(item, orderItemConstraints);
         if (errors) {
           // add to errors
-          Object.assign(errors, validate(item, orderItemConstraints));
+          Object.assign(errors, newErrors);
         } else {
-          errors = validate(item, orderItemConstraints);
+          errors = newErrors;
         }
       });
     }
@@ -270,11 +271,12 @@ module.exports = (OrderHelper, InventoryHelper) => {
     // check payment
     let payment = req.body.payment;
     if (payment && payment.type && payment.type === "credit") {
+      const newErrors = validate(req.body, creditCardPaymentConstraints);
       if (errors) {
         // add to errors
-        Object.assign(errors, validate(payment, creditCardPaymentConstraints));
+        Object.assign(errors, newErrors);
       } else {
-        errors = validate(payment, creditCardPaymentConstraints);
+        errors = newErrors;
       }
     }
     
@@ -311,7 +313,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
     // extract all item ids
     let itemsIds = items.map((item) => item.id);
     
-    res.send("die before creating real order for testing");
+    res.send("{\"message\": \"die before creating real order for testing\"}");
     return;
     // get price infomation
     InventoryHelper.getPriceByIds(itemsIds)
@@ -369,8 +371,8 @@ module.exports = (OrderHelper, InventoryHelper) => {
 
       // insert order to table
       return OrderHelper.insertOrder(order, customer, orderItems, payment);
-    }).then(() => {
-      res.status(201).send();
+    }).then((order_id) => {
+      res.status(201).send({order_id});
     }).catch((err) => {
       res.status(500).json({ error: err.message });
     });
