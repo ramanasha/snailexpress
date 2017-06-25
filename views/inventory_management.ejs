@@ -52,31 +52,23 @@
 
   <!-- This is the first modal -->
   <div class="reveal small" id="formModal" data-reveal>
-    <div class="alert callout small" data-closable style="display:none">
-      <h5>This is Important!</h5>
-      <p>But when you're done reading it, click the close button in the corner to dismiss this alert.</p>
-      <p>I'm using the default <code>data-closable</code> parameters, and simply fade out.</p>
-      <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
     <div class="column large-10">
       <h4><span id="modal-title">Create</span> Inventory</h4>
         <form id="form-inventory" enctype="multipart/form-data">
           <div class="row">
             <div class="medium-10">
               <label>name
-                <input type="text" name="name" id="name" placeholder="name">
+                <input type="text" name="name" id="name" placeholder="name" data-validation="required">
               </label>
             </div>
             <div class="medium-10">
               <label>price
-                <input type="number" name="price" id="price" step="any" placeholder="price">
+                <input type="number" name="price" id="price" step="any" placeholder="price" data-validation="number" >
               </label>
             </div>
             <div class="medium-10">
               <label>stock
-                <input type="number" name="stock" id="stock" placeholder="stock">
+                <input type="number" name="stock" id="stock" placeholder="stock" data-validation="number">
               </label>
             </div>
             <div class="medium-10">
