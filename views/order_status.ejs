@@ -15,10 +15,10 @@
           var el = $('.progressbar');
           el.append('<img src="https://placehold.it/100x100" style="position: relative; display:block; transform: translateX(-50%);">');
           el.append('<div class="bar-container" style="background:lightgrey"><span class="bar" style="background: black; height: 10px; display: inline-block"></span></div>');
-          
+
           var bar = el.find('.bar');
           var img = el.find('img');
-          
+
           function updateProgressBar() {
             var currentTime = new Date().getTime();
             var factor =  1 - ((endTime.getTime() - currentTime) / interval);
@@ -26,19 +26,19 @@
             var width = Math.round(factor * 100, 2) + "%";
             bar.css('width', width);
             img.css('left', width);
-            
+
             // FIXME we may get an update that extends the progress bar
             if (factor !== 1) {
               setTimeout(updateProgressBar, 50);
             }
           }
-          
+
           updateProgressBar();
         })
       </script>
       <div class="row">
         <div class="medium-6 column">
-          <img src="https://www.google.com/permissions/images/maps-att.png" />         
+          <img src="https://www.google.com/permissions/images/maps-att.png" />
         </div>
         <addr class="medium-6 column">
           (725) 352-3267<br />
@@ -50,7 +50,7 @@
         </addr>
       </div>
     </div>
-    
+
     <div class="column large-5">
       <p>To save your favourites, create a new account!</p>
       <button class="large expanded button">Sign Up</button>
@@ -72,23 +72,3 @@
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -12,10 +12,12 @@
         <% for (var i=0; i < messages.length; i++) { %>
             <div class="alert callout"><%= messages[i] %></div>
         <% } %>
+        <label for="name"> Full Name:</label>
+        <input id="name" type="text" name="name" placeholder="Full Name"/>
         <label for="email"> Email:</label>
-        <input id="email" type="email" name="email" placeholder="email"/>
+        <input id="email" type="email" name="email" placeholder="Email"/>
         <label for="password"> Password:</label>
-        <input id="password" type="password" name="password" placeholder="password"/>
+        <input id="password" type="password" name="password" placeholder="Password"/>
         <input class="expanded button" type="submit" value="Register">
       </form>
   </div>
