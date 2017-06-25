@@ -1,5 +1,7 @@
 $(document).ready(function() {
   let dueTimer = null;
+  let order_id;
+  let customer_id;
 
   // extend or reduce due time
   function updateTime(id, min) {
@@ -10,6 +12,7 @@ $(document).ready(function() {
         data: { min: min }
       })
       .done(function(result) {
+        updateDueTime(id);
         resolve(result);
       })
       .fail(function(err){
@@ -104,8 +107,8 @@ $(document).ready(function() {
   }
 
   $(".orders").click(function(event) {
-    let order_id = $(this).attr("data-order-id");
-    let customer_id = $(this).attr("data-customer-id");
+    order_id = $(this).attr("data-order-id");
+    customer_id = $(this).attr("data-customer-id");
     getOrderItems(order_id)
     .then(getCustomer(customer_id))
     .then(function() {
@@ -114,20 +117,25 @@ $(document).ready(function() {
         clearInterval(dueTimer);
       }
       startDueTimeChecker(order_id);
-
-      $("#minus-update-time").click(function(event) {
-        updateTime(order_id, -10);
-      });
-      $("#plus-update-time").click(function(event) {
-        updateTime(order_id, +10);
-      });
-      $("#complete").click(function(event) {
-        complete(order_id);
-      });
     })
     .catch(function(err) {
       console.log(err);
     })
+  });
+
+  $("#minus-update-time").click(function(event) {
+    event.preventDefault();
+    updateTime(order_id, -10);
+  });
+
+  $("#plus-update-time").click(function(event) {
+    event.preventDefault();
+    updateTime(order_id, +10);
+  });
+
+  $("#complete").click(function(event) {
+    event.preventDefault();
+    complete(order_id);
   });
 
   $("#order_detail").hide();

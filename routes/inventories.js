@@ -28,18 +28,19 @@ module.exports = (DataHelper) => {
       });
   });
 
-  // [api/inventories/:name]
-  router.get("/:name", (req, res) => {
+  // [api/inventories/:id]
+  router.get("/:id", (req, res) => {
     if (!req.params) {
       res.status(400).json({ error: 'invalid request: no data in parameter'});
       return;
     }
 
-    let name = req.params.name;
+    let id = req.params.id;
 
-    DataHelper.getInventoryByName(name)
+    DataHelper.getInventoryById(id)
       .then((inventory) => {
-        res.json(inventory);
+        if (!inventory.length) throw new Error("no inventory by this id");
+        res.json(inventory[0]);
       })
       .catch((err) => {
         res.status(500).json({ error: err.message });
@@ -68,7 +69,7 @@ module.exports = (DataHelper) => {
   });
 
   // [api/inventories/:id]
-  router.put("/", upload.single('product'), (req, res) => {
+  router.put("/:id", upload.single('product'), (req, res) => {
     if (!req.body) {
       res.status(400).json({ error: 'invalid request: no data in PUT body'});
       return;

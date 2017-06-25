@@ -3,13 +3,14 @@ module.exports = (knex) => {
     getInventories: () => {
       return knex
               .select("*")
-              .from("inventories");
+              .from("inventories")
+              .orderBy("id", "desc");
     },
-    getInventoryByName: (name) => {
+    getInventoryById: (id) => {
       return knex
               .select("*")
               .from("inventories")
-              .where("name", name);
+              .where("id", id);
     },
     getInventoryByIds: (ids) => {
       return knex
