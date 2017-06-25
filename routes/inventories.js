@@ -69,7 +69,7 @@ module.exports = (DataHelper) => {
   });
 
   // [api/inventories/:id]
-  router.put("/", upload.single('product'), (req, res) => {
+  router.put("/:id", upload.single('product'), (req, res) => {
     if (!req.body) {
       res.status(400).json({ error: 'invalid request: no data in PUT body'});
       return;
