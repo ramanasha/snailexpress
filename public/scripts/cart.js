@@ -1,4 +1,4 @@
-function addItem (inventoryId, quantity){
+function getCart (){
   var cookie = Cookies.get('cart');
   var cart;
   if (!cookie) {
@@ -6,21 +6,29 @@ function addItem (inventoryId, quantity){
   } else {
     cart = JSON.parse(cookie);
   }
-  cart.push({
-    "inventoryId": inventoryId,
-    "quantity": quantity
-  })
+  return cart;
+}
+
+function getCartItemById(cart, id) {
+  return cart.find((cartItem) => cartItem.inventoryId === id)
+}
+function addItem (inventoryId, quantity){
+  var cart = getCart();
+  var existingCartItem = getCartItemById(cart, inventoryId);
+  if (existingCartItem) {
+    existingCartItem.quantity ++;
+  } else {
+    cart.push({
+      inventoryId,
+      quantity
+    });
+  }
+
   Cookies.set('cart', JSON.stringify(cart));
 }
 
 function updateItem (inventoryId, quantity) {
-  var cookie = Cookies.get('cart');
-  var cart;
-  if (!cookie) {
-    cart = [];
-  } else {
-    cart = JSON.parse(cookie);
-  }
+  var cart = getCart();
   for (var item of cart) {
     if (item.inventoryId === inventoryId) {
        item.quantity = quantity;
@@ -30,13 +38,7 @@ function updateItem (inventoryId, quantity) {
 }
 
 function deleteItem (inventoryId) {
-  var cookie = Cookies.get('cart');
-  var cart;
-  if (!cookie) {
-    cart = [];
-  } else {
-    cart = JSON.parse(cookie);
-  }
+  var cart = getCart();
   for (var i = 0; i < cart.length; i++) {
     if (cart[i].inventoryId === inventoryId) {
       cart.splice(i, 1);
@@ -46,36 +48,61 @@ function deleteItem (inventoryId) {
   Cookies.set('cart', JSON.stringify(cart));
 }
 
-//Adding an item to the cart
+//Shows cart items
 function renderCart() {
-  cart.forEach (function (item) {
+  var cart = getCart();
+  $('#cart').children().remove();
 
-  });
+  $('#cart').html('<div>Loading...</div>');
+
+  var allItems = Promise.all(cart.map((cartItem) => $.get("/api/inventories/" + cartItem.inventoryId)));
+  allItems.then((items) => {
+    $('#cart').children().remove();
+
+    items.sort((a, b) => a.name > b.name);
+    items.forEach((item) => {
+      renderItem(item, getCartItemById(cart, item.id).quantity);
+    });
+    cartUpdated();
+  })
+}
+function renderItem(item, quantity) {
+  $('#cart').append(`
+    <div class="row cart-item" data-id="${item.id}">
+      <img class="thumbnail" src="${item.image}">
+      <h5>${item.name}</h5>
+      <p>${quantity} package(s)</p>
+      <p>Price: $${item.price}</p>
+      <p>Total Price: $${item.price*quantity}</p>
+      <div>
+        <input type="number" id="update-quantity-${item.id}" value="${quantity}" />
+        <button class="button changeItemQty">Change Quantity</button>
+      </div>
+    </div>
+  `);
 }
 
-function renderItem(id) {
-  console.log("hello");
-  $.get("/api/inventories/" + id)
-  .done(function(item) {
-    console.log(item);
-    $('#cart').append(`
-      <div class="row">
-        <img class="thumbnail" src="${item.image}">
-        <h5>${item.name}</h5>
-        <p>${item.quantity} snails</p>
-        <p>$${item.price*item.quantity} for ${item.quantity} snails</p>
-        <div>
-          <input type="number" value="1" /><a href="#" class="button changeItemQty">Change Quantity</a>
-        </div>
-      </div>
-    `);
+//updating cart event handlers
+function cartUpdated() {
+  $('.changeItemQty').on('click', function(evt){
+    evt.preventDefault();
+    var $button = $(this);
+    var $item = $button.closest('.cart-item');
+    var id = $item.data('id');
+    var quantity = $(`#update-quantity-${id}`).val();
+    console.log(quantity);
+    updateItem(id, quantity);
+    renderCart();
   })
 }
 
 $(document).ready(() => {
+  //page loads
+  renderCart();
+
+  //clicking on Add to Cart event handler
   $('#inventory').on('click', '.addToCart', function(evt) {
     evt.preventDefault();
-
     var $button = $(this);
     var $item = $button.closest('.item');
     var id = $item.data('id');
@@ -83,6 +110,7 @@ $(document).ready(() => {
     // add item to cart/cookie
     addItem(id, quantity);
     // show item in cart/cookie
-    renderItem(id);
+    // renderItem(id);
+    renderCart();
   })
 });

@@ -93,34 +93,16 @@ function createTemplateVars(req, templateVars = {}) {
 // Home page
 app.get("/", (req, res) => {
 
-  //cart on left of main page after scrolling down
-  const cartCookie = req.cookies.cart ? JSON.parse(req.cookies.cart) : [];
-  const cartIds = cartCookie.map((item) => item.inventoryId);
+  //see cart.js client side for cart code
+  //cart will be shown on the left of inventory
 
-  const cartQuantity = cartCookie.reduce((memo, item) => {
-    memo[item.inventoryId] = item.quantity;
-    return memo;
-  }, {});
-
-  const cartInventory = InventoryDataHelper.getInventoryByIds(cartIds)
+  //INVENTORY
+  InventoryDataHelper.getInventories()
     .then((items) => {
-      return items.map((item) => {
-        item.quantity = cartQuantity[item.id];
-        return item;
-      });
-    });
-  //inventory items to show on main page
-  const allInventory = InventoryDataHelper.getInventories();
-
-  Promise.all([cartInventory, allInventory])
-    .then(([cartInventory, allInventory]) => {
+      items.sort((a, b) => a.name > b.name);
       res.render("index", createTemplateVars(req, {
-        items: allInventory,
-        cart: cartInventory
+        items,
       }));
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err.message });
     });
 });
 
