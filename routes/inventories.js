@@ -55,6 +55,12 @@ module.exports = (DataHelper) => {
     }
 
     let inventory = req.body;
+    for (let idx in inventory) {
+      if (inventory[idx] === '') {
+        inventory[idx] = null;
+      }
+    }
+
     if (req.file) {
       inventory.image = req.file.filename;
     }
@@ -97,7 +103,10 @@ module.exports = (DataHelper) => {
 
     DataHelper.deleteInventory(id)
       .then((image) => {
-        fs.unlink('public/images/products/' + image);
+        if (image[0]) {
+          fs.unlink('public/images/products/' + image);
+        }
+
         res.status(200).send();
       })
       .catch((err) => {

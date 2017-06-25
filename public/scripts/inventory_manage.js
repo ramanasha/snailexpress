@@ -1,15 +1,6 @@
 $(document).ready(function() {
   let isCreateMode = true;
   let itemId = null;
-  function resetForm() {
-    $("#name").val("");
-    $("#price").val("");
-    $("#stock").val("");
-    $("#weight").val("");
-    $("#calories").val("");
-    $("#description").val("");
-    $("#file").val("");
-  }
 
   function createInventory() {
     // Get form
@@ -77,22 +68,25 @@ $(document).ready(function() {
 
   $("#button-new").click(function(event) {
     event.preventDefault();
-    resetForm();
+    $("#form-inventory").get(0).reset();
     isCreateMode = true;
     $("#modal-title").text("Create");
   });
 
-  $("#button-submit").click(function(event) {
-    event.preventDefault();
-    if (isCreateMode) {
-      createInventory();
-    } else {
-      updateInventory();
+  $.validate({
+    form : '#form-inventory',
+    onSuccess : function($form) {
+      if (isCreateMode) {
+        createInventory();
+      } else {
+        updateInventory();
+      }
+
+      return false; // Will stop the submission of the form
     }
-  })
+  });
 
   $(".button-mod").click(function(event) {
-    event.preventDefault();
     isCreateMode = false;
     $("#modal-title").text("Update");
     itemId = $(this).closest(".table-item").find(".item-id").text();
