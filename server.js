@@ -247,8 +247,13 @@ app.post("/register", (req, res) => {
 });
 
 // order status page
-app.get("/order_status", (req, res) => {
-  res.render("order_status");
+app.get("/order_status/:id", (req, res) => {
+  OrderDataHelper.getOrderById(req.params.id)
+  .then(([order]) => {
+    res.render("order_status", createTemplateVars(req, {
+      order
+    }));
+  });
 });
 
 // order management page
@@ -258,7 +263,7 @@ app.get("/order_management", (req, res) => {
     res.render("order_management", createTemplateVars(req, {
       orders: orders
     }));
-  })
+  });
 });
 
 // inventory_management page
@@ -268,7 +273,7 @@ app.get("/inventory_management", (req, res) => {
     res.render("inventory_management", createTemplateVars(req, {
       inventory: inventory
     }));
-  })
+  });
 });
 
 app.post("/inventory_management", (req, res) => {
@@ -277,7 +282,7 @@ app.post("/inventory_management", (req, res) => {
     res.render("inventory_management", createTemplateVars(req, {
       inventory: inventory
     }));
-  })
+  });
 });
 
 app.listen(PORT, () => {
