@@ -37,7 +37,7 @@ function updateItem (inventoryId, quantity) {
   Cookies.set('cart', JSON.stringify(cart));
 }
 
-function deleteItem (inventoryId) {
+function removeItem (inventoryId) {
   var cart = getCart();
   for (var i = 0; i < cart.length; i++) {
     if (cart[i].inventoryId === inventoryId) {
@@ -51,6 +51,14 @@ function deleteItem (inventoryId) {
 //Shows cart items
 function renderCart() {
   var cart = getCart();
+
+  // Cart is empty case
+  if (cart.length === 0) {
+    $('#cart').children().remove();
+    $('#cart').html('<div>Cart is empty.</div>');
+    return;
+  }
+
   $('#cart').children().remove();
 
   $('#cart').html('<div>Loading...</div>');
@@ -76,7 +84,10 @@ function renderItem(item, quantity) {
       <p>Total Price: $${item.price*quantity}</p>
       <div>
         <input type="number" id="update-quantity-${item.id}" value="${quantity}" />
-        <button class="button changeItemQty">Change Quantity</button>
+        <button class="button change-cart-item-quantity">Change Quantity</button>
+      </div>
+      <div>
+        <button class="button remove-cart-item">Remove</button>
       </div>
     </div>
   `);
@@ -84,16 +95,23 @@ function renderItem(item, quantity) {
 
 //updating cart event handlers
 function cartUpdated() {
-  $('.changeItemQty').on('click', function(evt){
+  $('.change-cart-item-quantity').on('click', function(evt){
     evt.preventDefault();
     var $button = $(this);
     var $item = $button.closest('.cart-item');
     var id = $item.data('id');
     var quantity = $(`#update-quantity-${id}`).val();
-    console.log(quantity);
     updateItem(id, quantity);
     renderCart();
-  })
+  });
+  $('.remove-cart-item').on('click', function(evt){
+    evt.preventDefault();
+    var $button = $(this);
+    var $item = $button.closest('.cart-item');
+    var id = $item.data('id');
+    removeItem(id);
+    renderCart();
+  });
 }
 
 $(document).ready(() => {
