@@ -94,15 +94,29 @@
                 <input class="card_expiry_year" name="card_expiry_year" type="number" class="column small-6" placeholder="YYYY" />
               </label>
             </div>
+            <label>
+              Special Requests
+              <textarea class="special_requests" name="special_requests"></textarea>
+            </label>
             <button type="submit" class="expanded button">Pay Now</button>
           </form>
         </div>
-        <div class="tabs-panel" id="panel2">
-          <p>Two</p>
-          <img class="thumbnail" src="assets/img/generic/rectangle-7.jpg">
-        </div>
         <div class="tabs-panel" id="panel3">
-          <a class="expanded button">Send Order</a>
+         <form class="pay-in-store" method="POST" action="/checkout" >
+            <label>
+              Name
+              <input class="name" name="name" type="text" placeholder="Joe Smith" />
+            </label>
+            <label>
+              Phone Number
+              <input class="phoneno" name="phoneno" type="text" placeholder="324534573" />
+            </label>
+            <label>
+              Special Requests
+              <textarea class="special_requests" name="special_requests"></textarea>
+            </label>
+            <button type="submit" class="expanded button">Send Order</button>
+          </form>
         </div>
       </div>
 

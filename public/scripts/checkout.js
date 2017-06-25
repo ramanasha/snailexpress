@@ -13,7 +13,7 @@ $(function() {
     return $('<div class="small alert callout input-error">' + error + '</div>');
   }
   
-  $('form.credit').submit(function(event) {
+  $('form').submit(function(event) {
     var $this = $(this);
     $this.find('.input-error').remove();
     
@@ -22,16 +22,21 @@ $(function() {
       name: $this.find('.name').val(),
       phone: $this.find('.phoneno').val()
     };
-    
-    data.payment = {
-      type: "credit",
-      credit: {
-        card_no: $this.find('.card_number').val(),
-        card_cvc: $this.find('.card_cvc').val(),
-        card_expiry_month: $this.find('.card_expiry_month').val(),
-        card_expiry_year: $this.find('.card_expiry_year').val()
-      }
-    };
+    if ($this.hasClass('credit')) {
+      data.payment = {
+        type: "credit",
+        credit: {
+          card_no: $this.find('.card_number').val(),
+          card_cvc: $this.find('.card_cvc').val(),
+          card_expiry_month: $this.find('.card_expiry_month').val(),
+          card_expiry_year: $this.find('.card_expiry_year').val()
+        }
+      };
+    } else if ($this.hasClass('pay-in-store')){
+      data.payment = {
+        type: "payInStore"
+      };
+    }
     
     data.order = {
       special_requests: "", // FIXME
@@ -92,6 +97,10 @@ $(function() {
           // probably a schema error
           prependErrors(["Something went wrong. Try again later."], $this);
         }
+      } else {
+        // shouldn't have this happen... give human error message
+        // probably a schema error
+        prependErrors(["Something went wrong. Try again later."], $this);
       }
     });
   });
