@@ -26,7 +26,7 @@
   <div id="responsive-menu">
     <div class="top-bar-right">
       <ul class="menu">
-        <% if (typeof user == 'undefined') { %>
+        <% if (typeof user == 'undefined' || user === null) { %>
           <li><button type="button" class="button" onclick="window.location.href='/register'">Register</button></li>
           <li><button type="button" class="button" onclick="window.location.href='/login'">Login</button></li>
         <% } else { %>
@@ -35,7 +35,8 @@
               <input class="button" type="submit" value="Logout">
             </form>
           </li>
-          <span style="float: right; margin-right: 10px"> Hello, <%= user.email %>! </span>
+          <span style="float: right; margin-right: 10px"> Hello,
+          <%=user%>! </span>
         <% } %>
       </ul>
     </div>

@@ -84,7 +84,7 @@ app.use("/api/orders", ordersRoutes(OrderDataHelper, InventoryDataHelper));
 app.use("/api/restaurants", restaurantsRoutes(RestaurantDataHelper));
 
 function createTemplateVars(req, templateVars = {}) {
-  templateVars.user = users[req.session.user_id];
+  templateVars.user = req.session.user_id;
   templateVars.messages = req.flash('messages');
   templateVars.googleMapsAPIKey = GOOGLE_MAPS_API_KEY;
   return templateVars;
