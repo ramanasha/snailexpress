@@ -74,7 +74,10 @@ app.use("/styles", sass({
   dest: __dirname + "/public/styles",
   debug: true,
   outputStyle: 'expanded',
-  includePaths: [__dirname + '/node_modules/foundation-sites/assets/']
+  includePaths: [
+    __dirname + '/node_modules/foundation-sites/assets/',
+    __dirname + '/node_modules/foundation-sites/scss/'
+  ]
 }));
 app.use(express.static("public"));
 app.use(method('_method'));
