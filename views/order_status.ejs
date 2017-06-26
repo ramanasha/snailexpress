@@ -32,24 +32,25 @@
     
     <div class="column large-5">
       <% if (user === undefined) { %>
-        <p>To save your favourites, create a new account!</p>
-        <button class="large expanded button">Sign Up</button>
-
-        <form hidden="hidden" action="/register" method="POST">
-          <% for (var i=0; i < messages.length; i++) { %>
-              <div class="alert callout"><%= messages[i] %></div>
-          <% } %>
+        <div class="sign-up-ad">
+          Sign up for some awesome benefits!
+          <button class="sign-up large expanded button">Sign Up</button>
+        </div>
+        
+        <form class="sign-up-form" hidden="hidden" action="/register" method="POST">
+          <h3>Sign up</h3>
           <label for="name"> Full Name</label>
           <input id="name" type="text" name="name" placeholder="Full Name"/>
           <label for="email"> Email</label>
           <input id="email" type="email" name="email" placeholder="Email"/>
           <label for="password"> Password</label>
           <input id="password" type="password" name="password" placeholder="Password"/>
-          <input class="expanded button" type="submit" value="Register">
+          <input class="expanded button" type="submit" value="Sign up">
         </form>
       <% } %>
     </div>
   </div>
+  <script type="text/javascript" src="/scripts/order-status.js"></script>
 </body>
 
 </html>
