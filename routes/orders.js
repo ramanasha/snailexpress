@@ -4,6 +4,7 @@ const express = require('express');
 const moment = require('moment');
 const router  = express.Router();
 const validate = require('validate.js');
+const twilio = require('twilio');
 
 module.exports = (OrderHelper, InventoryHelper, CustomerHelper, SMSHelper) => {
 
@@ -21,11 +22,36 @@ module.exports = (OrderHelper, InventoryHelper, CustomerHelper, SMSHelper) => {
   // incoming sms example code
   // todo : implement incoming sms
   router.post('/sms', function(req, res) {
-    let twiml = require('twilio').TwimlResponse();
+    let twiml = new twilio.twiml.MessagingResponse();
     twiml.message('The Robots are coming! Head for the hills!');
     res.writeHead(200, {'Content-Type': 'text/xml'});
     res.end(twiml.toString());
   });
+  
+  // [api/orders/:id/twilio/inform_restaurant]
+  router.get('/:id/twilio/inform_restaurant', function(req, res) {
+    //Create TwiML response
+    OrderHelper.getOrderById(req.params.id)
+    .then(([order]) => {
+      const customer = CustomerHelper.getCustomerById(order.customer_id);
+      const order_items = OrderHelper.getOrderItems(order.order_id);
+      return Promise.all([order, customer, order_items]);
+    })
+    .then(([order, customer, order_items]) => {
+      let twiml = new twilio.twiml.VoiceResponse();
+      console.log(order_items);
+      twiml.say(`You have a new order. ${customer.name} ordered ${order_items.length} menu items.`);
+      
+      order_items.forEach((item) => {
+        twiml.say(`${item.qty} of ${item.weight} pound ${item.name} packages.`);
+      });
+      
+      res.writeHead(200, {'Content-Type': 'text/xml'});
+      res.end(twiml.toString());
+      
+    });
+  });
+
 
   // [api/orders/:id] : return an order by order id
   router.get("/:id", (req, res) => {
@@ -92,7 +118,7 @@ module.exports = (OrderHelper, InventoryHelper, CustomerHelper, SMSHelper) => {
     OrderHelper.complete(id)
       .then(() => OrderHelper.getOrderById(id))
       .then(([order]) => {
-        return CustomerHelper.getCustomerById(order.customer_id)
+        return CustomerHelper.getCustomerById(order.customer_id);
       })
       .then((customer) => {
         return SMSHelper.sendSMS(customer.phone, "Ready to pick up!");
@@ -389,7 +415,6 @@ module.exports = (OrderHelper, InventoryHelper, CustomerHelper, SMSHelper) => {
       // insert order to table
       return OrderHelper.insertOrder(order, customer, orderItems, payment);
     }).then((order_id) => {
-      
       res.status(201).send({order_id});
     }).catch((err) => {
       res.status(500).json({ error: err.message });
