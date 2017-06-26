@@ -3,6 +3,23 @@ $(document).ready(function() {
   let order_id;
   let customer_id;
 
+  // update time (current time + 5 sec);
+  function udpateDemoTime(id) {
+    return new Promise(function(resolve, reject) {
+      $.ajax({
+        type: 'PUT',
+        url: `/api/orders/${id}/update_demo_time?_method=PUT`,
+      })
+      .done(function(result) {
+        updateDueTime(id);
+        resolve(result);
+      })
+      .fail(function(err){
+        reject(err);
+      })
+    });
+  }
+
   // extend or reduce due time
   function updateTime(id, min) {
     return new Promise(function(resolve, reject) {
@@ -96,7 +113,9 @@ $(document).ready(function() {
   function createOrderElement(item) {
     return `<li>
               <div class="row item-id" data-order-id=${item.order_id}>
-                <div class="column small-3 text-center"><img class="thumbnail" src="../public/images/products/${item.image}"></div>
+                <div class="column small-3 text-center">
+                  <img class="thumbnail" src="/images/products/${item.image}">
+                </div>
                 <div class="column small-9">
                   <h5>${item.name}</h5>
                   x ${item.qty}<br />
@@ -121,6 +140,11 @@ $(document).ready(function() {
     .catch(function(err) {
       console.log(err);
     })
+  });
+
+  $("#demo-time").click(function(event) {
+    event.preventDefault();
+    udpateDemoTime(order_id);
   });
 
   $("#minus-update-time").click(function(event) {

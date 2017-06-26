@@ -36,10 +36,10 @@
                 <td class="item-weight"><%=item.weight%></td>
                 <td class="item-calories"><%=item.calories%></td>
                 <td class="item-description"><%=item.description%></td>
-                <td class="item-image"><img src="../images/products/<%=item.image%>"></td>
+                <td class="item-image"><img src="/images/products/<%=item.image%>" width="150px" height="150px"></td>
                 <td>
                   <a data-open="formModal" class="button button-mod">Mod</a>
-                  <button class="button button-del">Del</button>
+                  <a class="button button-del">Del</a>
                 </td>
               </tr>
             <%
@@ -63,12 +63,12 @@
             </div>
             <div class="medium-10">
               <label>price
-                <input type="number" name="price" id="price" step="any" placeholder="price" data-validation="number" >
+                <input type="number" name="price" id="price" step="any" placeholder="price" data-validation="required" >
               </label>
             </div>
             <div class="medium-10">
               <label>stock
-                <input type="number" name="stock" id="stock" placeholder="stock" data-validation="number">
+                <input type="number" name="stock" id="stock" placeholder="stock" data-validation="required">
               </label>
             </div>
             <div class="medium-10">

@@ -80,6 +80,23 @@ module.exports = (knex) => {
                 .update({time_to_complete: timeToComplete})
               });
     },
+    updateDemoTime: (id) => {
+      return knex
+              .select("time_to_complete")
+              .from("orders")
+              .where("id", id)
+              .first()
+              .then((result) => {
+                let timeToComplete = new Date();
+                timeToComplete.setSeconds(timeToComplete.getSeconds() + 10);
+                return timeToComplete;
+              })
+              .then((timeToComplete) => {
+                return knex("orders")
+                .where("id", id)
+                .update({time_to_complete: timeToComplete})
+              });
+    },
     getProgressData: (id) => {
       return knex
               .select("start_timestamp", "time_to_complete")
