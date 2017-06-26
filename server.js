@@ -229,8 +229,13 @@ app.post("/register", (req, res) => {
 app.get("/order_status/:id", (req, res) => {
   OrderDataHelper.getOrderById(req.params.id)
   .then(([order]) => {
+    const orderItems = OrderDataHelper.getOrderItems(req.params.id);
+    return Promise.all([order, orderItems]);
+  })
+  .then(([order, order_items]) => {
     res.render("order_status", createTemplateVars(req, {
-      order
+      order,
+      order_items
     }));
   });
 });

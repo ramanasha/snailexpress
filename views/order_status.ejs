@@ -6,7 +6,7 @@
 
 <body>
   <div class="row">
-    <div class="column large-7">
+    <div class="column large-8">
       <div class="progress-bar" style="margin: 10rem 0;"></div>
       <script>
         $(document).ready(function() {
@@ -30,7 +30,7 @@
       </div>
     </div>
     
-    <div class="column large-5">
+    <div class="column large-4">
       <% if (user === undefined) { %>
         <div class="sign-up-ad">
           Sign up for some awesome benefits!
@@ -48,6 +48,19 @@
           <input class="expanded button" type="submit" value="Sign up">
         </form>
       <% } %>
+      <div class="order-items">
+        <% console.log(order) %>
+        <% order_items.forEach((item) => { %>
+          <div class="callout">
+            <img class="thumbnail" src="/images/products/<%= item.image %>">
+            <h5><%= item.name %></h5>
+            <p>Quantity <%= item.qty %></p>
+            <p>Price: $<%= item.price%></p>
+            <p>Total price: $<%= item.price*item.qty %></p>
+          </div>
+
+        <% }); %>
+      </div>
     </div>
   </div>
   <script type="text/javascript" src="/scripts/order-status.js"></script>
