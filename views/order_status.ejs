@@ -48,13 +48,22 @@
           <input class="expanded button" type="submit" value="Sign up">
         </form>
       <% } %>
+      <h2>Order Summary</h2>
+      <div class="callout">
+        <div>Order ID: <%= order.id %></div>
+        <div>Customer Name: <%= order_customer.name %></div>
+        <div>Total Price: $<%= order.total_price %></div>
+        <div>Special Requests: <%= order.special_requests %></div>
+      </div>
       <div class="order-items">
         <% console.log(order) %>
         <% order_items.forEach((item) => { %>
           <div class="callout">
-            <img class="thumbnail" src="/images/products/<%= item.image %>">
+            <div class="text-center">
+              <img class="thumbnail text-center" src="/images/products/<%= item.image %>">
+            </div>
             <h5><%= item.name %></h5>
-            <p>Quantity <%= item.qty %></p>
+            <p>Quantity: <%= item.qty %></p>
             <p>Price: $<%= item.price%></p>
             <p>Total price: $<%= item.price*item.qty %></p>
           </div>
