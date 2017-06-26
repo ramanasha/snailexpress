@@ -13,7 +13,6 @@ module.exports = (OrderHelper, InventoryHelper) => {
   router.get("/", (req, res) => {
     OrderHelper.getOrders()
       .then((orders) => {
-        console.log(orders);
         res.json(orders);
       })
       .catch((err) => {
@@ -361,7 +360,6 @@ module.exports = (OrderHelper, InventoryHelper) => {
       let orderItems = [];
 
       for (let idx in items) {
-        console.log(items[idx]);
         let data = {
           inventory_id: items[idx].id,
           qty: items[idx].qty

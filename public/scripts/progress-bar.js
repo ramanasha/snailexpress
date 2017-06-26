@@ -2,9 +2,9 @@ function createProgressBar(selector, startTime, endTime) {
   console.log(startTime, endTime);
   var el = $(selector);
   el.hide();
-  el.append('<img src="/images/bar-icon.jpg" style="position: relative; display:block; transform: translateX(-50%); width: 100px; height: 60px;">');
-  el.append('<div class="bar-container" style="background:lightgrey"><span class="bar" style="background: black; height: 10px; display: inline-block"></span></div>');
-  el.append('<div class="bar-description">Order progress</div>')
+  el.append('<img class="bar-icon" src="/images/bar-icon.jpg">');
+  el.append('<div class="bar-container"><span class="bar"></span></div>');
+  el.append('<div class="bar-description">Order progress</div>');
   
   var bar = el.find('.bar');
   var img = el.find('img');

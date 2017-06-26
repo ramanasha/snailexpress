@@ -2,6 +2,7 @@
 @import 'foundation';
 
 @include foundation-everything;
+@include add-foundation-colors;
 
 .logo {
     font-size: 22px;
@@ -64,5 +65,33 @@ table {
     input {
       width: 50px;
     }
+  }
+}
+
+.progress-bar {
+  position: relative;
+  margin: 150px 50px;
+  .bar-icon {
+    max-width: 100px;
+    position: absolute;
+    display:block;
+    transform: translateX(-50%) translateY(-100%);
+  }
+  
+  .bar-container {
+    background: #DDD;
+    border-radius: 7px;
+  }
+  
+  .bar {
+    background-color: $success-color;
+    height: 14px;
+    border-radius: 7px;
+    display: inline-block;
+  }
+  .bar-description {
+    text-align: center;
+    color: grey;
+    font-size: 150%;
   }
 }
