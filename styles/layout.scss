@@ -2,3 +2,67 @@
 @import 'foundation';
 
 @include foundation-everything;
+
+.logo {
+    font-size: 22px;
+    color: black;
+    &:hover, &:visited {
+        color: black;
+    }
+    
+}
+
+table {
+  border-collapse: collapse;
+  display: table;
+  border: 1px solid #666b76;
+  
+  thead {
+    background: #F9F9F9;
+    border-bottom: 1px solid #666b76;
+  }
+
+  th, td {
+    border: 1px solid #666b76;
+    text-align: center !important;
+  }
+
+  tbody {
+    td {
+      background: white;
+    }
+  }
+
+  .orders {
+    cursor: pointer;
+  }
+}
+
+#inventory .item {
+  border: 1px solid $light-gray;
+  padding: 10px;
+  margin: 0 5px;
+  margin-bottom: 5px;
+
+  &:hover {
+    border: 1px solid scale-color($light-gray, $lightness: -10%);;
+  }
+}
+
+.main-img {
+  border: 1px solid $light-gray;
+  padding: 10px;
+}
+
+.index-inventory {
+  margin-top: 15px;
+
+  #cart {
+    border: 1px solid $light-gray;
+    padding: 5px 30px;
+
+    input {
+      width: 50px;
+    }
+  }
+}
