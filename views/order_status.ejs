@@ -12,7 +12,8 @@
         $(document).ready(function() {
           var bar = createProgressBar('.progress-bar',
             new Date(<%= order.start_timestamp.getTime() %>),
-            new Date(<%= order.time_to_complete.getTime() %>));
+            new Date(<%= order.time_to_complete.getTime() %>),
+            '<%= order.status %>');
 
           (function poll() {
             setTimeout(function() {
@@ -24,6 +25,7 @@
               })
               .done(function(data) {
                 bar.updateEndTime(new Date(data.time_to_complete));
+                bar.updateStatus(data.status);
               })
               .always(poll)
             }, 5000);

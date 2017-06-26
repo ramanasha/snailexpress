@@ -61,7 +61,7 @@ module.exports = (knex) => {
       time_to_complete.setMinutes(time_to_complete.getMinutes() + minutes);
       return knex("orders")
               .where("id", id)
-              .update({time_to_complete, status: "incomplete"});
+              .update({time_to_complete, status: "processing"});
     },
     complete: (id) => {
       return knex("orders")
@@ -71,7 +71,7 @@ module.exports = (knex) => {
     cancel: (id) => {
       return knex("orders")
               .where("id", id)
-              .update({end_timestamp: new Date(), status: "canclled"});
+              .update({end_timestamp: new Date(), status: "cancelled"});
     },
     updateTime: (id, min) => {
       min = Number(min);
@@ -110,7 +110,7 @@ module.exports = (knex) => {
     },
     getProgressData: (id) => {
       return knex
-              .select("start_timestamp", "time_to_complete")
+              .select("start_timestamp", "time_to_complete", "status")
               .from("orders")
               .first()
               .where("id", id);

@@ -96,20 +96,52 @@ table {
 
 .callout {
   border: 1px solid #666b76;
-  img {
-    width: 100px;
-    height: 100px;
-  }
+}
+
+img.preview {
+  max-width: 150px;
+  max-height: 150px;
 }
 
 .progress-bar {
   position: relative;
-  margin: 150px 50px;
+  margin: 150px 60px;
   .bar-icon {
-    max-width: 100px;
-    position: absolute;
-    display:block;
+    img {
+      max-width: 100px;
+    }
     transform: translateX(-50%) translateY(-100%);
+    position: absolute;
+    display: inline-block;
+    &.min1, &.min2, &.min3, &.min4, &.min5, &.min6 {
+      &::after {
+        content: "?";
+        font-weight: bold;
+        display: inline-block;
+        position: absolute;
+        z-index: 1;
+        bottom: 100%;
+        right: 0;
+        transform: translateX(70%) translateY(50%);
+      }
+    }
+    
+    &.min2::after {
+      font-size: 120%;
+    }
+    &.min3::after {
+      font-size: 170%;
+    }
+    &.min4::after {
+      font-size: 220%;
+    }
+    &.min5::after {
+      font-size: 300%;
+    }
+    &.min6::after {
+      content: "!!!";
+      font-size: 300%;
+    }
   }
   
   .bar-container {
@@ -122,10 +154,35 @@ table {
     height: 14px;
     border-radius: 7px;
     display: inline-block;
+    &.alert {
+      background-color: $alert-color;
+    }
+    &.info {
+      background-color: $secondary-color;
+    }
+    &.warning {
+      background-color: $warning-color;
+    }
+    &.success {
+      background-color: $success-color;
+    }
   }
   .bar-description {
     text-align: center;
-    color: grey;
     font-size: 150%;
+    
+    &.alert {
+      color: $alert-color;
+    }
+    &.info {
+      color: $secondary-color;
+    }
+    &.warning {
+      color: $warning-color;
+    }
+    &.success {
+      color: $body-font-color;
+    }
   }
+  
 }
