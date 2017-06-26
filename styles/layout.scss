@@ -44,6 +44,11 @@ table {
   }
 }
 
+.text {
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+
 #inventory .item-inner {
   border: 1px solid $light-gray;
   padding: 10px;

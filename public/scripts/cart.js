@@ -60,7 +60,7 @@ function renderCart() {
   // Cart is empty case
   if (cart.length === 0) {
     $('#cart').children().remove();
-    $('#cart').html('<div>Cart is empty.</div>');
+    $('#cart').html('<div class="callout">Cart is empty.</div>');
     return;
   }
 
@@ -89,9 +89,9 @@ function renderItem(item, quantity) {
     <div class="row cart-item" data-id="${item.id}">
       <img class="thumbnail preview" src="/images/products/${item.image}">
       <h5>${item.name}</h5>
-      <p>${quantity} package(s)</p>
-      <p>Price: $${item.price}</p>
-      <p>Total Price: $${item.price*quantity}</p>
+      <div class="text">${quantity} package(s)</div>
+      <div class="text">Price: $${item.price}</div>
+      <div class="text">Total Price: $${item.price*quantity}</div>
       <input type="number" id="update-quantity-${item.id}" value="${quantity}" />
       <button class="button change-cart-item-quantity">Change Quantity</button>
       <button class="button remove-cart-item">Remove</button>

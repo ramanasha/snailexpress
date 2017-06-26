@@ -25,15 +25,15 @@
           <div class="item-inner">
             <img class="thumbnail preview" src="/images/products/<%= item.image %>">
             <h5><%= item.name %></h5>
-            <p>$<%= item.price %></p>
-            <p><%= item.calories %> calories per serving</p>
+            <div class="text">$<%= item.price %></div>
+            <div class="text"><%= item.calories %> calories per serving</div>
             <% if (item.weight === 1) { %>
-              <p><%= item.weight %> lb</p>
+              <div class="text"><%= item.weight %> lb</div>
             <% } else { %>
-              <p><%= item.weight %> lbs</p>
+              <div class="text"><%= item.weight %> lbs</div>
             <% } %>
-            <p><%= item.description %></p>
-            <div>Quantity:
+            <div class="text"><%= item.description %></div>
+            <div class="text">Quantity:
               <input type="number" id="add-quantity-<%=item.id%>" value="1"/>
             </div>
             <a href="#" class="button expanded addToCart">Add to cart</a>
