@@ -139,7 +139,7 @@ $(document).ready(function() {
     getOrderItems(order_id)
     .then(getCustomer(customer_id))
     .then(function() {
-      if (order_status === 'incomplete') {
+      if (order_status === 'processing') {
         startDueTimeChecker(order_id);
       } else {
         $('#dueTimer').countdown('stop');
