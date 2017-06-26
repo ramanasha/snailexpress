@@ -87,13 +87,9 @@ function renderItem(item, quantity) {
       <p>${quantity} package(s)</p>
       <p>Price: $${item.price}</p>
       <p>Total Price: $${item.price*quantity}</p>
-      <div>
-        <input type="number" id="update-quantity-${item.id}" value="${quantity}" />
-        <button class="button change-cart-item-quantity">Change Quantity</button>
-      </div>
-      <div>
-        <button class="button remove-cart-item">Remove</button>
-      </div>
+      <input type="number" id="update-quantity-${item.id}" value="${quantity}" />
+      <button class="button change-cart-item-quantity">Change Quantity</button>
+      <button class="button remove-cart-item">Remove</button>
     </div>
   `);
 }
