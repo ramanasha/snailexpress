@@ -87,7 +87,7 @@ function renderCart() {
 function renderItem(item, quantity) {
   $('#cart').append(`
     <div class="row cart-item" data-id="${item.id}">
-      <img class="thumbnail" src="${item.image}">
+      <img class="thumbnail preview" src="/images/products/${item.image}">
       <h5>${item.name}</h5>
       <p>${quantity} package(s)</p>
       <p>Price: $${item.price}</p>

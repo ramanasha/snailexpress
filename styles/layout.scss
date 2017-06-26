@@ -73,11 +73,6 @@ table {
 
 }
 
-.thumbnail {
-    width: 300px;
-    height: 200px;
-}
-
 .order-items {
   list-style-type: none;
   border: 1px solid #666b76;
@@ -87,10 +82,13 @@ table {
     margin-top: 10px;
     margin-left: 10px;
   }
+}
 
-  img {
-    width: 100px;
-    height: 100px;
+.cart {
+  .preview {
+    margin-bottom: 0;
+    margin-right: 1rem;
+    max-height: 100px;
   }
 }
 
@@ -99,7 +97,6 @@ table {
 }
 
 img.preview {
-  max-width: 150px;
   max-height: 150px;
 }
 
