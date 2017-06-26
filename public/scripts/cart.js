@@ -35,7 +35,7 @@ function removeItem (inventoryId) {
 }
 
 function getCart() {
-    var cookie = Cookies.get('cart');
+  var cookie = Cookies.get('cart');
   var cart;
   if (!cookie) {
     cart = [];

@@ -29,23 +29,25 @@
         </addr>
       </div>
     </div>
-
+    
     <div class="column large-5">
-      <p>To save your favourites, create a new account!</p>
-      <button class="large expanded button">Sign Up</button>
+      <% if (user === undefined) { %>
+        <p>To save your favourites, create a new account!</p>
+        <button class="large expanded button">Sign Up</button>
 
-      <form>
-        <label>
-          Username
-          <input type="text" placeholder="Username" />
-        </label>
-        <label>
-          Password
-          <input type="text" placeholder="Password" />
-        </label>
-        <button type="submit" class="expanded button">Sign Up</button>
-      </form>
-
+        <form hidden="hidden" action="/register" method="POST">
+          <% for (var i=0; i < messages.length; i++) { %>
+              <div class="alert callout"><%= messages[i] %></div>
+          <% } %>
+          <label for="name"> Full Name</label>
+          <input id="name" type="text" name="name" placeholder="Full Name"/>
+          <label for="email"> Email</label>
+          <input id="email" type="email" name="email" placeholder="Email"/>
+          <label for="password"> Password</label>
+          <input id="password" type="password" name="password" placeholder="Password"/>
+          <input class="expanded button" type="submit" value="Register">
+        </form>
+      <% } %>
     </div>
   </div>
 </body>

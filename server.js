@@ -187,7 +187,7 @@ app.post("/login", (req, res) =>{
 
 app.post("/logout", (req, res) => {
   //logout to remove cookie session with the user_id.
-  req.session.user_id = null;
+  req.session.user_id = undefined;
   req.flash('messages', 'logout is a success!');
   return res.redirect("/");
 });

@@ -330,8 +330,8 @@ module.exports = (OrderHelper, InventoryHelper) => {
     }).then((items) => {
       // calculate total price
       let totalPrice = items.reduce((total, current) => {
-        return Number(total.price * total.qty) + Number(current.price * current.qty);
-      });
+        return total + Number(current.price * current.qty);
+      }, 0);
 
       let timeToComplete = new Date();
       timeToComplete.setMinutes(timeToComplete.getMinutes() + min);

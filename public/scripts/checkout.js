@@ -13,7 +13,7 @@ $(function() {
     return $('<div class="small alert callout input-error">' + error + '</div>');
   }
   
-  $('form').submit(function(event) {
+  $('form.checkout').submit(function(event) {
     var $this = $(this);
     $this.find('.input-error').remove();
     
