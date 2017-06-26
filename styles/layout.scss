@@ -105,6 +105,12 @@ img.preview {
   max-height: 150px;
 }
 
+@keyframes spin {
+  from {transform:rotate(0deg);}
+  to {transform:rotate(360deg);}
+}
+
+
 .progress-bar {
   position: relative;
   margin: 150px 60px;
@@ -144,8 +150,15 @@ img.preview {
       content: "!!!";
       font-size: 300%;
     }
+    &.min6 {
+      /* The animation part: */
+      animation-name: spin;
+      animation-duration: 4000ms;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+    }
   }
-  
+    
   .bar-container {
     background: #DDD;
     border-radius: 7px;
