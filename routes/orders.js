@@ -353,6 +353,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
       };
 
       let customer = {
+        name: name,
         phone: phone,
         email: email
       };
@@ -360,6 +361,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
       let orderItems = [];
 
       for (let idx in items) {
+        console.log(items[idx]);
         let data = {
           inventory_id: items[idx].id,
           qty: items[idx].qty
