@@ -75,13 +75,8 @@ module.exports = (OrderHelper, InventoryHelper) => {
 
     OrderHelper.getTimeToComplete(id)
       .then((result) => {
-        let currentTime = moment(new Date());
-        let timeToComplete = moment(result.time_to_complete);
-        let due = timeToComplete.diff(currentTime, 'minute');
-        if (due < 0) {
-          due = 0;
-        }
-        res.json(due);
+        let dueTime = moment(result.time_to_complete).format('YYYY/MM/DD hh:mm:ss');
+        res.json(dueTime);
       })
       .catch((err) => {
         res.status(500).json({ error: err.message });

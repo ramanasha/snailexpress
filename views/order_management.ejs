@@ -20,7 +20,7 @@
           <%
             orders.forEach( function(order, index) {
           %>
-              <tr class="orders" data-order-id="<%=order.id%>" data-customer-id="<%=order.customer_id%>" data-start-time="<%=order.start_timestamp%>" data-end-time="<%=order.time_to_complete%>">
+              <tr class="orders" data-order-id="<%=order.id%>" data-customer-id="<%=order.customer_id%>" data-start-time="<%=order.start_timestamp%>" data-end-time="<%=order.time_to_complete%>" data-status="<%=order.status%>">
                 <td>
                   <%=order.name%>
                </td>
@@ -55,7 +55,7 @@
       </div>
 
       <div class="text-right">
-        <div>Due in <span id="dueTimer"></span> minutes</div>
+        <div>Due in <span id="dueTimer"></span></div>
         <button class="button" id="demo-time">
           Demo
         </button>
