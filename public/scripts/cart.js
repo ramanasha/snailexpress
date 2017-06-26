@@ -16,7 +16,7 @@ function addItem (inventoryId, quantity){
   var cart = getCart();
   var existingCartItem = getCartItemById(cart, inventoryId);
   if (existingCartItem) {
-    existingCartItem.quantity ++;
+    existingCartItem.quantity = parseInt(existingCartItem.quantity) + parseInt(quantity);
   } else {
     cart.push({
       inventoryId,
@@ -162,9 +162,11 @@ $(document).ready(() => {
     var $button = $(this);
     var $item = $button.closest('.item');
     var id = $item.data('id');
-    var quantity = 1;
+    var quantity = $(`#add-quantity-${id}`).val();
+    console.log(quantity);
     // add item to cart/cookie
     addItem(id, quantity);
+    $(`#add-quantity-${id}`).val(1);
     // show item in cart/cookie
     // renderItem(id);
     renderCart();

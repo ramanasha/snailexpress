@@ -34,7 +34,7 @@
           <% } %>
           <p><%= item.description %></p>
           <div>Quantity:
-            <input type="number" id="update-quantity-${item.id}" value="${quantity}" />
+            <input type="number" id="add-quantity-<%=item.id%>" value="1"/>
           </div>
           <a href="#" class="button expanded addToCart">Add to cart</a>
         </div>
