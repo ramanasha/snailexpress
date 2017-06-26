@@ -1,13 +1,11 @@
 "use strict";
 
-const sms = require('../lib/sms-helper');
 const express = require('express');
 const moment = require('moment');
 const router  = express.Router();
 const validate = require('validate.js');
 
-// Status => 1. in progress 2: complete 3: cancel
-module.exports = (OrderHelper, InventoryHelper) => {
+module.exports = (OrderHelper, InventoryHelper, CustomerHelper, SMSHelper) => {
 
   // [api/orders/] : return all order list
   router.get("/", (req, res) => {
@@ -23,8 +21,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
   // incoming sms example code
   // todo : implement incoming sms
   router.post('/sms', function(req, res) {
-    let twilio = require('twilio');
-    let twiml = new twilio.TwimlResponse();
+    let twiml = require('twilio').TwimlResponse();
     twiml.message('The Robots are coming! Head for the hills!');
     res.writeHead(200, {'Content-Type': 'text/xml'});
     res.end(twiml.toString());
@@ -93,8 +90,12 @@ module.exports = (OrderHelper, InventoryHelper) => {
     let id = req.params.id;
 
     OrderHelper.complete(id)
-      .then(() => {
-        return sms.sendSMS("437-345-2360", "Ready to pick up!");
+      .then(() => OrderHelper.getOrderById(id))
+      .then(([order]) => {
+        return CustomerHelper.getCustomerById(order.customer_id)
+      })
+      .then((customer) => {
+        return SMSHelper.sendSMS(customer.phone, "Ready to pick up!");
       })
       .then(() => {
         res.status(200).send();
@@ -388,6 +389,7 @@ module.exports = (OrderHelper, InventoryHelper) => {
       // insert order to table
       return OrderHelper.insertOrder(order, customer, orderItems, payment);
     }).then((order_id) => {
+      
       res.status(201).send({order_id});
     }).catch((err) => {
       res.status(500).json({ error: err.message });

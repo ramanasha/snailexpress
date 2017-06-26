@@ -8,6 +8,11 @@ const COOKIE_SECRET = process.env.COOKIE_SECRET;
 if (!COOKIE_SECRET) throw new Error("COOKIE_SECRET environment variable required");
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 if (!GOOGLE_MAPS_API_KEY) throw new Error("GOOGLE_MAPS_API_KEY environment variable required");
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+if (!TWILIO_ACCOUNT_SID) throw new Error("TWILIO_ACCOUNT_SID environment variable required");
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+if (!TWILIO_AUTH_TOKEN) throw new Error("TWILIO_AUTH_TOKEN environment variable required");
+
 
 const express       = require("express");
 const bodyParser    = require("body-parser");
@@ -64,23 +69,28 @@ app.use("/styles", sass({
   ]
 }));
 app.use(express.static("public"));
+app.use(express.static("node_modules/foundation-sites/dist/"));
 app.use(method('_method'));
 
+// twilio services
+const twilio = require('twilio');
+const twilioClient = new twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+
 // Data helper
+const SMSHelper = require('./lib/sms-helper.js')(twilioClient);
 const UserDataHelper = require("./db/helper/user-helper.js")(knex);
 const CustomerDataHelper = require("./db/helper/customer-helper.js")(knex);
 const FeedbackDataHelper = require("./db/helper/feedback-helper.js")(knex);
 const InventoryDataHelper = require("./db/helper/inventory-helper.js")(knex);
 const OrderDataHelper = require("./db/helper/order-helper.js")(knex);
 const RestaurantDataHelper = require("./db/helper/restaurant-helper.js")(knex);
-app.use(express.static("node_modules/foundation-sites/dist/"));
 
 // Mount all resource routes
 app.use("/api/users", usersRoutes(UserDataHelper));
 app.use("/api/customers", customersRoutes(CustomerDataHelper));
 app.use("/api/feedbacks", feedbacksRoutes(FeedbackDataHelper));
 app.use("/api/inventories", inventoriesRoutes(InventoryDataHelper));
-app.use("/api/orders", ordersRoutes(OrderDataHelper, InventoryDataHelper));
+app.use("/api/orders", ordersRoutes(OrderDataHelper, InventoryDataHelper, CustomerDataHelper, SMSHelper));
 app.use("/api/restaurants", restaurantsRoutes(RestaurantDataHelper));
 
 function createTemplateVars(req, templateVars = {}) {
