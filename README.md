@@ -14,10 +14,10 @@ Location is set using Google Maps API.
 
 ## Screenshots
 
-!["main page"](https://github.com/rosexw/snailexpress/blob/master/screnshots/main%20page_head%20and%20image.png)
-!["checkout"](https://github.com/rosexw/snailexpress/blob/master/screnshots/checkout.png)
-!["inventory management"](https://github.com/rosexw/snailexpress/blob/master/screnshots/inventory%20management.png)
-!["order status"](https://github.com/rosexw/snailexpress/blob/master/screnshots/order%20status.png)
+!["main page"](https://github.com/rosexw/snailexpress/blob/master/screenshots/main%20page_head%20and%20image.png)
+!["checkout"](https://github.com/rosexw/snailexpress/blob/master/screenshots/checkout.png)
+!["inventory management"](https://github.com/rosexw/snailexpress/blob/master/screenshots/inventory%20management.png)
+!["order status"](https://github.com/rosexw/snailexpress/blob/master/screenshots/order%20status.png)
 
 ## Getting Started
 
