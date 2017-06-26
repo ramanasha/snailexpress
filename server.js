@@ -102,7 +102,7 @@ const OrderDataHelper = require("./db/helper/order-helper.js")(knex);
 const RestaurantDataHelper = require("./db/helper/restaurant-helper.js")(knex);
 
 // create twilio voice server
-const twilioVoiceServer = require('./twilio/voice_server.js')(OrderDataHelper, CustomerDataHelper, SMSHelper, TWILIO_VOICE_SERVER_PORT);
+const twilioVoiceServer = require('./twilio/voice_server.js')(OrderDataHelper, CustomerDataHelper, SMSHelper, TWILIO_VOICE_SERVER_PORT, OWNER_NUMBER);
 
 
 // Mount all resource routes
@@ -146,8 +146,6 @@ app.get("/checkout", (req, res) => {
     return memo;
   }, {});
 
-  console.log("cart Ids: ", cartIds);
-
   InventoryDataHelper.getInventoryByIds(cartIds)
     .then((items) => {
       items = items.map((item) => {
@@ -156,7 +154,6 @@ app.get("/checkout", (req, res) => {
       });
 
       // FIXME make sure we don't have negative stock
-      console.log(items);
       const subtotal = items.reduce((sum, item) => {
         return sum + item.price * item.quantity;
       }, 0).toFixed(2);
@@ -262,13 +259,11 @@ app.get("/order_status/:id", (req, res) => {
     if (!order) {
       return res.status(404).send("page not found");
     }
-    console.log(order);
     const order_items = OrderDataHelper.getOrderItems(req.params.id);
     const order_customer = CustomerDataHelper.getCustomerById(order.customer_id);
     return Promise.all([order, order_items, order_customer]);
   })
   .then(([order, order_items, order_customer]) => {
-    console.log(order);
     res.render("order_status", createTemplateVars(req, {
       order,
       order_items,

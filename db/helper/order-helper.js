@@ -56,6 +56,13 @@ module.exports = (knex) => {
                 });
               });
     },
+    setInProgress: (id, minutes) => {
+      const time_to_complete = new Date();
+      time_to_complete.setMinutes(time_to_complete.getMinutes() + minutes);
+      return knex("orders")
+              .where("id", id)
+              .update({time_to_complete, status: "incomplete"});
+    },
     complete: (id) => {
       return knex("orders")
               .where("id", id)

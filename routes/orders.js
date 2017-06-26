@@ -358,7 +358,7 @@ module.exports = (OrderHelper, InventoryHelper, CustomerHelper, SMSHelper) => {
       timeToComplete.setMinutes(timeToComplete.getMinutes() + min);
 
       let order = {
-        status: 'incomplete',
+        status: 'pending',
         start_timestamp: new Date(),
         total_price: totalPrice,
         special_requests: specialRequests,
@@ -398,7 +398,6 @@ module.exports = (OrderHelper, InventoryHelper, CustomerHelper, SMSHelper) => {
     .then((order_id) => {
       res.status(201).send({order_id});
     }).catch((err) => {
-      console.log(err);
       res.status(500).json({ error: err.message });
     });
   });
