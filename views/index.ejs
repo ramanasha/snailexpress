@@ -16,14 +16,14 @@
         </div>
       </div>
 
+
       <!-- INVENTORY -->
       <div id="inventory" class="column large-9 small-up-2 large-up-3">
         <h4> Try them all! </h4>
         <% items.forEach((item) => { %>
         <div class="column item" data-id="<%=item.id%>">
-          <!-- <img class="thumbnail" src="<%= item.image %>"> -->
           <div class="item-inner">
-            <img class="thumbnail" src="/images/products/<%=item.image%>">
+            <img class="thumbnail" src="<%= item.image %>">
             <h5><%= item.name %></h5>
             <p>$<%= item.price %></p>
             <p><%= item.calories %> calories per serving</p>
@@ -33,7 +33,10 @@
               <p><%= item.weight %> lbs</p>
             <% } %>
             <p><%= item.description %></p>
-            <a href="#" class="button expanded addToCart">Add item to cart</a>
+            <div>Quantity:
+              <input type="number" id="add-quantity-<%=item.id%>" value="1"/>
+            </div>
+            <a href="#" class="button expanded addToCart">Add to cart</a>
           </div>
         </div>
         <% }); %>

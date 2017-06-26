@@ -2,7 +2,7 @@ function addItem (inventoryId, quantity){
   var cart = getCart();
   var existingCartItem = getCartItemById(cart, inventoryId);
   if (existingCartItem) {
-    existingCartItem.quantity ++;
+    existingCartItem.quantity = parseInt(existingCartItem.quantity) + parseInt(quantity);
   } else {
     cart.push({
       inventoryId,
@@ -66,7 +66,7 @@ function renderCart() {
 
   $('#cart').children().remove();
 
-  $('#cart').html('<div>Loading...</div>');
+  $('#cart').html('<div class="spinner"></div>');
 
   var allItems = Promise.all(cart.map((cartItem) => $.get("/api/inventories/" + cartItem.inventoryId)));
   allItems.then((items) => {
@@ -76,8 +76,13 @@ function renderCart() {
     items.forEach((item) => {
       renderItem(item, getCartItemById(cart, item.id).quantity);
     });
+    if (items.length > 0) {
+      $('#cart').append('<a href="/checkout" class="button" style="display:block; margin-top:12%">Check Out</a>');
+    }
+
     cartUpdated();
-  })
+
+  });
 }
 function renderItem(item, quantity) {
   $('#cart').append(`
@@ -87,13 +92,9 @@ function renderItem(item, quantity) {
       <p>${quantity} package(s)</p>
       <p>Price: $${item.price}</p>
       <p>Total Price: $${item.price*quantity}</p>
-      <div>
-        <input type="number" id="update-quantity-${item.id}" value="${quantity}" />
-        <button class="button change-cart-item-quantity">Change Quantity</button>
-      </div>
-      <div>
-        <button class="button remove-cart-item">Remove</button>
-      </div>
+      <input type="number" id="update-quantity-${item.id}" value="${quantity}" />
+      <button class="button change-cart-item-quantity">Change Quantity</button>
+      <button class="button remove-cart-item">Remove</button>
     </div>
   `);
 }
@@ -129,9 +130,11 @@ $(document).ready(() => {
     var $button = $(this);
     var $item = $button.closest('.item');
     var id = $item.data('id');
-    var quantity = 1;
+    var quantity = $(`#add-quantity-${id}`).val();
+    console.log(quantity);
     // add item to cart/cookie
     addItem(id, quantity);
+    $(`#add-quantity-${id}`).val(1);
     // show item in cart/cookie
     // renderItem(id);
     renderCart();

@@ -97,13 +97,20 @@ $(document).ready(function() {
   // start due time checker (check it every 10 sec)
   function startDueTimeChecker(id) {
     updateDueTime(id);
-    dueTimer = setInterval(updateDueTime, 10000, id);
   }
 
   // get due time from server
   function updateDueTime(id) {
     $.get(`/api/orders/${id}/due`, function(dueTime) {
-      $("#dueTimer").text(dueTime);
+      $('#dueTimer').countdown(dueTime, {elapse: true})
+      .on('update.countdown', function(event) {
+        if (event.elapsed) {
+          $(this).css("color", "red");
+        } else {
+          $(this).css("color", "black");
+        }
+        $(this).html(event.strftime('%H:%M:%S'));
+      });
     }).fail(function(err) {
       console.log(err);
     });
@@ -128,14 +135,16 @@ $(document).ready(function() {
   $(".orders").click(function(event) {
     order_id = $(this).attr("data-order-id");
     customer_id = $(this).attr("data-customer-id");
+    order_status = $(this).attr("data-status");
     getOrderItems(order_id)
     .then(getCustomer(customer_id))
     .then(function() {
-      // clear interval before start new interval
-      if (dueTimer !== null) {
-        clearInterval(dueTimer);
+      if (order_status === 'incomplete') {
+        startDueTimeChecker(order_id);
+      } else {
+        $('#dueTimer').countdown('stop');
+        $('#dueTimer').text("");
       }
-      startDueTimeChecker(order_id);
     })
     .catch(function(err) {
       console.log(err);
