@@ -3,4 +3,5 @@ $(function() {
     $('.sign-up-ad').slideUp();
     $('.sign-up-form').slideDown();
   });
+
 });

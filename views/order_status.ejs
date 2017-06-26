@@ -13,6 +13,21 @@
           var bar = createProgressBar('.progress-bar',
             new Date(<%= order.start_timestamp.getTime() %>),
             new Date(<%= order.time_to_complete.getTime() %>));
+
+          (function poll() {
+            setTimeout(function() {
+              $.ajax({
+                url: "/api/orders/<%= order.order_id %>/progress",
+                type: "GET",
+                dataType: "json",
+                timeout: 2000
+              })
+              .done(function(data) {
+                bar.updateEndTime(new Date(data.time_to_complete));
+              })
+              .always(poll)
+            }, 5000);
+          })();
         })
       </script>
       <div class="row">
@@ -50,7 +65,7 @@
       <% } %>
       <h2>Order Summary</h2>
       <div class="callout">
-        <div>Order ID: <%= order.id %></div>
+        <div>Order ID: <%= order.order_id %></div>
         <div>Customer Name: <%= order_customer.name %></div>
         <div>Total Price: $<%= order.total_price %></div>
         <div>Special Requests: <%= order.special_requests %></div>

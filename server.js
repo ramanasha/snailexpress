@@ -229,14 +229,16 @@ app.post("/register", (req, res) => {
 app.get("/order_status/:id", (req, res) => {
   OrderDataHelper.getOrderById(req.params.id)
   .then(([order]) => {
+    if (!order) {
+      return res.status(404).send("page not found");
+    }
+    console.log(order);
     const order_items = OrderDataHelper.getOrderItems(req.params.id);
-    return Promise.all([order, order_items]);
-  })
-  .then(([order, order_items]) => {
     const order_customer = CustomerDataHelper.getCustomerById(order.customer_id);
     return Promise.all([order, order_items, order_customer]);
   })
   .then(([order, order_items, order_customer]) => {
+    console.log(order);
     res.render("order_status", createTemplateVars(req, {
       order,
       order_items,
