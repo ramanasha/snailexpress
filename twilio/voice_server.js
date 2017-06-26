@@ -7,7 +7,7 @@ module.exports = (OrderHelper, CustomerHelper, SMSHelper, port) => {
   const app = express();
   
   // [twilio/orders/:id/inform_restaurant]
-  app.get("/twilio/orders/:id/inform_restaurant", (req, res) => {
+  app.post("/twilio/orders/:id/inform_restaurant", (req, res) => {
     //Create TwiML response
     OrderHelper.getOrderById(req.params.id)
     .then(([order]) => {
@@ -19,8 +19,8 @@ module.exports = (OrderHelper, CustomerHelper, SMSHelper, port) => {
       let twiml = new twilio.twiml.VoiceResponse();
       twiml.say(`You have a new order. ${customer.name} ordered ${order_items.length} menu items.`);
       
-      order_items.forEach((item) => {
-        twiml.say(`${item.qty} of ${item.weight} pound ${item.name} packages.`);
+      order_items.forEach((item, i) => {
+        twiml.say(`Item ${i + 1}: ${item.name}, quantity: ${item.qty}, size: ${item.weight} pounds.`);
       });
       
       res.writeHead(200, {'Content-Type': 'text/xml'});

@@ -28,29 +28,6 @@ module.exports = (OrderHelper, InventoryHelper, CustomerHelper, SMSHelper) => {
     res.end(twiml.toString());
   });
   
-  // [api/orders/:id/twilio/inform_restaurant]
-  router.get('/:id/twilio/inform_restaurant', function(req, res) {
-    //Create TwiML response
-    OrderHelper.getOrderById(req.params.id)
-    .then(([order]) => {
-      const customer = CustomerHelper.getCustomerById(order.customer_id);
-      const order_items = OrderHelper.getOrderItems(order.order_id);
-      return Promise.all([order, customer, order_items]);
-    })
-    .then(([order, customer, order_items]) => {
-      let twiml = new twilio.twiml.VoiceResponse();
-      console.log(order_items);
-      twiml.say(`You have a new order. ${customer.name} ordered ${order_items.length} menu items.`);
-      
-      order_items.forEach((item) => {
-        twiml.say(`${item.qty} of ${item.weight} pound ${item.name} packages.`);
-      });
-      
-      res.writeHead(200, {'Content-Type': 'text/xml'});
-      res.end(twiml.toString());
-      
-    });
-  });
 
 
   // [api/orders/:id] : return an order by order id
@@ -415,8 +392,13 @@ module.exports = (OrderHelper, InventoryHelper, CustomerHelper, SMSHelper) => {
       // insert order to table
       return OrderHelper.insertOrder(order, customer, orderItems, payment);
     }).then((order_id) => {
+      return SMSHelper.sendPhoneMessageToOwner(`/twilio/orders/${order_id}/inform_restaurant`)
+      .then(() => order_id);
+    })
+    .then((order_id) => {
       res.status(201).send({order_id});
     }).catch((err) => {
+      console.log(err);
       res.status(500).json({ error: err.message });
     });
   });

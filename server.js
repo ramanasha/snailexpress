@@ -12,6 +12,10 @@ const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 if (!TWILIO_ACCOUNT_SID) throw new Error("TWILIO_ACCOUNT_SID environment variable required");
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 if (!TWILIO_AUTH_TOKEN) throw new Error("TWILIO_AUTH_TOKEN environment variable required");
+const TWILIO_VOICE_SERVER_PORT = process.env.TWILIO_VOICE_SERVER_PORT;
+if (!TWILIO_VOICE_SERVER_PORT) throw new Error("TWILIO_VOICE_SERVER_PORT environment variable required");
+const OWNER_NUMBER = process.env.OWNER_NUMBER;
+if (!OWNER_NUMBER) throw new Error("OWNER_NUMBER environment variable required");
 
 
 const express       = require("express");
@@ -76,14 +80,30 @@ app.use(method('_method'));
 const twilio = require('twilio');
 const twilioClient = new twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
+// localtunnel service
+const localtunnel = require('localtunnel');
+const localtunnel_url = new Promise((resolve, reject) => {
+  localtunnel(TWILIO_VOICE_SERVER_PORT, function (err, tunnel) {
+    if (err) reject(err);
+    resolve(tunnel.url);
+  });
+});
+
+localtunnel_url.then((localtunnel_url) => {
 // Data helper
-const SMSHelper = require('./lib/sms-helper.js')(twilioClient);
+console.log(`Your localtunnel url is: ${localtunnel_url}`);
+
+const SMSHelper = require('./lib/sms-helper.js')(twilioClient, OWNER_NUMBER, localtunnel_url);
 const UserDataHelper = require("./db/helper/user-helper.js")(knex);
 const CustomerDataHelper = require("./db/helper/customer-helper.js")(knex);
 const FeedbackDataHelper = require("./db/helper/feedback-helper.js")(knex);
 const InventoryDataHelper = require("./db/helper/inventory-helper.js")(knex);
 const OrderDataHelper = require("./db/helper/order-helper.js")(knex);
 const RestaurantDataHelper = require("./db/helper/restaurant-helper.js")(knex);
+
+// create twilio voice server
+const twilioVoiceServer = require('./twilio/voice_server.js')(OrderDataHelper, CustomerDataHelper, SMSHelper, TWILIO_VOICE_SERVER_PORT);
+
 
 // Mount all resource routes
 app.use("/api/users", usersRoutes(UserDataHelper));
@@ -287,5 +307,11 @@ app.post("/inventory_management", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log("Example app listening on port " + PORT);
+  console.log("Snail Express app listening on port " + PORT);
+});
+  
+})
+.catch((err) => {
+  console.error(err);
+  process.exit(1);
 });

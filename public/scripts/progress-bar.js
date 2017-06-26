@@ -28,6 +28,9 @@ function createProgressBar(selector, startTime, endTime) {
   return {
     updateEndTime(time) {
       endTime = time;
+    },
+    updateStatus(isComplete) {
+      complete = isComplete;
     }
   };
 }
