@@ -4,20 +4,24 @@
 @include foundation-everything;
 @include add-foundation-colors;
 
+.button {
+  border: 1px solid #727883 !important;
+  font-family: $body-font-family;
+}
+
 .logo {
     font-size: 22px;
     color: black;
     &:hover, &:visited {
         color: black;
     }
-    
 }
 
 table {
   border-collapse: collapse;
   display: table;
   border: 1px solid #666b76;
-  
+
   thead {
     background: #F9F9F9;
     border-bottom: 1px solid #666b76;
@@ -39,10 +43,9 @@ table {
   }
 }
 
-#inventory .item {
+#inventory .item-inner {
   border: 1px solid $light-gray;
   padding: 10px;
-  margin: 0 5px;
   margin-bottom: 5px;
 
   &:hover {
@@ -65,6 +68,36 @@ table {
     input {
       width: 50px;
     }
+  }
+
+}
+
+.thumbnail {
+    width: 300px;
+    height: 200px;
+}
+
+.order-items {
+  list-style-type: none;
+  border: 1px solid #666b76;
+  padding: 10px;
+
+  .item-id {
+    margin-top: 10px;
+    margin-left: 10px;
+  }
+
+  img {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+.callout {
+  border: 1px solid #666b76;
+  img {
+    width: 100px;
+    height: 100px;
   }
 }
 

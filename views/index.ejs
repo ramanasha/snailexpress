@@ -5,7 +5,7 @@
   <body>
     <!-- This is our big wide header photo and message, if you want -->
     <div class="row">
-      <img src="./images/main.png" width="2000px" height="750px" class="main-img">
+      <img src="/images/main.png" width="2000px" height="750px" class="main-img">
     </div>
 
     <!-- CART -->
@@ -22,17 +22,19 @@
         <% items.forEach((item) => { %>
         <div class="column item" data-id="<%=item.id%>">
           <!-- <img class="thumbnail" src="<%= item.image %>"> -->
-          <img class="thumbnail" src="https://placehold.it/300x200">
-          <h5><%= item.name %></h5>
-          <p>$<%= item.price %></p>
-          <p><%= item.calories %> calories per serving</p>
-          <% if (item.weight === 1) { %>
-            <p><%= item.weight %> lb</p>
-          <% } else { %>
-            <p><%= item.weight %> lbs</p>
-          <% } %>
-          <p><%= item.description %></p>
-          <a href="#" class="button expanded addToCart">Add item to cart</a>
+          <div class="item-inner">
+            <img class="thumbnail" src="/images/products/<%=item.image%>">
+            <h5><%= item.name %></h5>
+            <p>$<%= item.price %></p>
+            <p><%= item.calories %> calories per serving</p>
+            <% if (item.weight === 1) { %>
+              <p><%= item.weight %> lb</p>
+            <% } else { %>
+              <p><%= item.weight %> lbs</p>
+            <% } %>
+            <p><%= item.description %></p>
+            <a href="#" class="button expanded addToCart">Add item to cart</a>
+          </div>
         </div>
         <% }); %>
       </div>

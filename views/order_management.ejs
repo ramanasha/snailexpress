@@ -22,7 +22,6 @@
           %>
               <tr class="orders" data-order-id="<%=order.id%>" data-customer-id="<%=order.customer_id%>" data-start-time="<%=order.start_timestamp%>" data-end-time="<%=order.time_to_complete%>">
                 <td>
-                <img class="thumbnail" src="https://placehold.it/100x100">
                   <%=order.name%>
                </td>
                 <td>
@@ -42,25 +41,13 @@
     </div>
 
     <div class="column large-5" id="order_detail">
-      <h2>Order</h2>
-
-      <h3>Items</h3>
-      <ul class="order-items">
-<!--           <li>
-            <div class="row">
-              <div class="column small-3 text-center"><img class="thumbnail" src=""></div>
-              <div class="column small-9">
-                <h5>item</h5>
-                x 2<br />
-                $50
-              </div>
-            </div>
-          </li> -->
+      <h3>Order Items</h3>
+      <ul class="order-items row">
       </ul>
 
       <h3>Customer Information</h3>
       <div class="callout row">
-        <div class="column small-3 text-center"><img class="thumbnail" src="https://placehold.it/100x100"></div>
+        <div class="column small-3 text-center"><img class="thumbnail" src="/images/customer.png"></div>
         <div class="column small-9">
           <span id="customer-name">Bobby Jenkins</span><br />
           <span id="customer-phone">(342) 435-3723</span>
@@ -69,6 +56,9 @@
 
       <div class="text-right">
         <div>Due in <span id="dueTimer"></span> minutes</div>
+        <button class="button" id="demo-time">
+          Demo
+        </button>
         <button class="button" id="minus-update-time">
           - 10 minutes
         </button>

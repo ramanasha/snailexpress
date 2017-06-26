@@ -141,7 +141,25 @@ module.exports = (OrderHelper, InventoryHelper) => {
       });
   });
 
-  /* json format example
+  //[api/orders/:id/update_demo_time] : update time_to_complete (unit: minute)
+  router.put("/:id/update_demo_time", (req, res) => {
+    if (!req.body) {
+      res.status(400).json({ error: 'invalid request: no data in POST body'});
+      return;
+    }
+
+    let id = req.params.id;
+
+    OrderHelper.updateDemoTime(id)
+      .then(() => {
+        res.status(200).send();
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err.message });
+      });
+  });
+
+  /* json fomat example
   {
     contact: {
       name: "kim",
