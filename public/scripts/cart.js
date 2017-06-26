@@ -104,8 +104,13 @@ function renderCart() {
     items.forEach((item) => {
       renderItem(item, getCartItemById(cart, item.id).quantity);
     });
+    if (items.length > 0) {
+      $('#cart').append('<a href="/checkout" class="button" style="display:block; margin-top:12%">Check Out</a>');
+    }
+
     cartUpdated();
-  })
+
+  });
 }
 function renderItem(item, quantity) {
   $('#cart').append(`
