@@ -43,7 +43,7 @@ $(document).ready(function() {
     return new Promise(function(resolve, reject) {
       $.ajax({
         type: 'PUT',
-        url: `/api/orders/${id}/complete?_method=PUT`
+        url: `/api/orders/${id}/complete`
       })
       .done(function(result) {
         window.location.href = "/order_management";
